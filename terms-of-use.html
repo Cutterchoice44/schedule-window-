@@ -10,173 +10,90 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-  <!-- NAV styling copied from index.html for a perfect match -->
+  <!-- NAV styling copied from index.html -->
   <style>
     :root {
       --brand-teal: #5A8785;
 
-      /* schedule layout scale */
+      /* schedule scale */
       --hourH: 52px;                 /* height per hour */
-      --qH: calc(var(--hourH) / 4);  /* quarter-hour track */
+      --qH: calc(var(--hourH) / 4);  /* 15-min track */
     }
 
-    /* NAVIGATION BAR */
-    #main-nav {
-      display: flex !important;
-      justify-content: space-between !important;
-      align-items: center !important;
-      width: 100% !important;
-      padding: 0.10rem 0.65rem !important;
-      margin: 0 !important;
-      box-sizing: border-box !important;
-      background-color: var(--brand-teal) !important;
-      position: relative !important;
-      z-index: 1000 !important;
-    }
-    #main-nav .nav-item { flex: 1 !important; }
-    #main-nav .nav-left { text-align: left !important; }
-    #main-nav .nav-center { text-align: center !important; }
-    #main-nav .nav-right {
-      display: flex !important;
-      align-items: center !important;
-      justify-content: flex-end !important;
-      flex: 1 !important;
-    }
-    #main-nav a.nav-link {
-      color: #fff !important;
-      font-family: 'Bebas Neue', sans-serif !important;
-      font-size: 2rem !important;
-      text-transform: uppercase !important;
-      text-decoration: none !important;
-      margin: 0 0.5rem !important;
-    }
-    #main-nav .social-icon,
-    #main-nav .icon-img {
-      margin-left: 0.5rem !important;
-      vertical-align: middle !important;
-      width: 2rem !important;
-      height: auto !important;
-    }
-    #manualCastBtn {
-      background: none; border: none; color: #fff; font-size: 1.8rem; cursor: pointer; margin-left: 0.5rem;
-    }
-    @media (max-width: 768px) {
-      #main-nav { flex-wrap: nowrap !important; padding: 0.115rem 0.5rem !important; }
-      #main-nav .nav-item { text-align: center !important; flex: 1 !important; }
-      #main-nav a.nav-link { font-size: 1rem !important; margin: 0 0.25rem !important; }
-      #main-nav .social-icon, #main-nav .icon-img, #main-nav .nav-onemusic { display: none !important; }
+    /* NAV */
+    #main-nav{display:flex!important;justify-content:space-between!important;align-items:center!important;width:100%!important;padding:.10rem .65rem!important;margin:0!important;box-sizing:border-box!important;background-color:var(--brand-teal)!important;position:relative!important;z-index:1000!important}
+    #main-nav .nav-item{flex:1!important}
+    #main-nav .nav-left{text-align:left!important}
+    #main-nav .nav-center{text-align:center!important}
+    #main-nav .nav-right{display:flex!important;align-items:center!important;justify-content:flex-end!important;flex:1!important}
+    #main-nav a.nav-link{color:#fff!important;font-family:'Bebas Neue',sans-serif!important;font-size:2rem!important;text-transform:uppercase!important;text-decoration:none!important;margin:0 .5rem!important}
+    #main-nav .social-icon,#main-nav .icon-img{margin-left:.5rem!important;vertical-align:middle!important;width:2rem!important;height:auto!important}
+    #manualCastBtn{background:none;border:none;color:#fff;font-size:1.8rem;cursor:pointer;margin-left:.5rem}
+    @media (max-width:768px){
+      #main-nav{flex-wrap:nowrap!important;padding:.115rem .5rem!important}
+      #main-nav .nav-item{text-align:center!important;flex:1!important}
+      #main-nav a.nav-link{font-size:1rem!important;margin:0 .25rem!important}
+      #main-nav .social-icon,#main-nav .icon-img,#main-nav .nav-onemusic{display:none!important}
     }
 
-    /* PAGE-SPECIFIC STYLES */
-    html, body { background:#000; color:#fafafa; }
-    * { box-sizing: border-box; }
+    /* PAGE */
+    html,body{background:#000;color:#fafafa}
+    *{box-sizing:border-box}
 
-    .page-header {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:.5rem .75rem; border-bottom:2px solid #000; background: var(--brand-teal);
-    }
-    .page-header h1 {
-      font-family:'Bebas Neue',sans-serif; font-size:2.2rem; letter-spacing:.5px; color:#fff; margin:0;
-    }
-    .utilities { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; }
-    .legend { display:flex; gap:.5rem; align-items:center; }
-    .chip { width:.9rem; height:.9rem; border-radius:2px; border:1px solid #1f1f1f; display:inline-block; }
+    .page-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem .75rem;border-bottom:2px solid #000;background:var(--brand-teal)}
+    .page-header h1{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.5px;color:#fff;margin:0}
+    .utilities{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+    .legend{display:flex;gap:.5rem;align-items:center}
+    .chip{width:.9rem;height:.9rem;border-radius:2px;border:1px solid #1f1f1f;display:inline-block}
 
-    .month-controls {
-      display:flex; gap:.5rem; align-items:center; justify-content:space-between;
-      border-bottom:1px solid var(--brand-teal); padding:.75rem .75rem; position:sticky; top:0; background:#000; z-index:20;
-    }
-    .month-controls .title { font-family:'Bebas Neue',sans-serif; font-size:2rem; color:var(--brand-teal); }
-    .ccr-btn {
-      background: var(--brand-teal); color:#fff; border:none; border-radius:6px; padding:.5rem .75rem; cursor:pointer;
-      font-weight:600; letter-spacing:.3px;
-    }
+    .month-controls{display:flex;gap:.5rem;align-items:center;justify-content:space-between;border-bottom:1px solid var(--brand-teal);padding:.75rem .75rem;position:sticky;top:0;background:#000;z-index:20}
+    .month-controls .title{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--brand-teal)}
+    .ccr-btn{background:var(--brand-teal);color:#fff;border:none;border-radius:6px;padding:.5rem .75rem;cursor:pointer;font-weight:600;letter-spacing:.3px}
 
-    .weeks-stack { display:flex; flex-direction:column; gap:1.25rem; padding:1rem .75rem 2rem; }
+    .weeks-stack{display:flex;flex-direction:column;gap:1.25rem;padding:1rem .75rem 2rem}
 
     /* 8 columns: time ruler + 7 days */
-    .week-grid {
-      display:grid;
-      grid-template-columns: 64px repeat(7, 1fr);
-      gap: 6px;
-      border:2px solid var(--brand-teal);
-      border-radius:8px;
-      overflow:hidden;
-      background:#0f0f0f;
-      padding: 6px;
+    .week-grid{display:grid;grid-template-columns:64px repeat(7,1fr);gap:6px;border:2px solid var(--brand-teal);border-radius:8px;overflow:hidden;background:#0f0f0f;padding:6px}
+
+    /* Time ruler */
+    .time-col{position:relative;height:calc(var(--hourH)*24);border:1px solid #1c1c1c;border-radius:6px;background:repeating-linear-gradient(to bottom,#0b0b0b 0,#0b0b0b calc(var(--hourH) - 1px),#1e1e1e calc(var(--hourH) - 1px),#1e1e1e var(--hourH))}
+    .time-col .hour-label{position:absolute;left:6px;font-size:.78rem;color:#a7a7a7;transform:translateY(-50%)}
+
+    /* Day header + body */
+    .day-col{display:flex;flex-direction:column}
+    .day-head{background:#0d0d0d;border:1px solid #1e1e1e;padding:.45rem .5rem;border-radius:6px;margin-bottom:6px}
+    .dow{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--brand-teal)}
+    .date{font-size:.85rem;color:#bdbdbd}
+
+    .day-body{display:grid;grid-template-rows:repeat(96,var(--qH));position:relative;height:calc(var(--hourH)*24);border:1px solid #1c1c1c;border-radius:6px;overflow:hidden;background:repeating-linear-gradient(to bottom,#0b0b0b 0,#0b0b0b calc(var(--hourH) - 1px),#1a1a1a calc(var(--hourH) - 1px),#1a1a1a var(--hourH))}
+
+    /* Show block — FULL bright colour */
+    .show{
+      grid-column:1/-1;margin:2px 4px;
+      background:var(--chip,#22D3EE); color:var(--fg,#001318);
+      border-radius:10px; padding:.48rem .6rem; overflow:hidden;
     }
+    .show .time{font-size:.78rem;opacity:.95}
+    .show .title{font-weight:800;line-height:1.2}
+    .show .host{font-size:.85rem;opacity:.92}
 
-    /* Time ruler column */
-    .time-col {
-      position: relative;
-      height: calc(var(--hourH) * 24);
-      border:1px solid #1c1c1c; border-radius:6px;
-      background:
-        repeating-linear-gradient(
-          to bottom,
-          #0b0b0b 0,
-          #0b0b0b calc(var(--hourH) - 1px),
-          #1e1e1e calc(var(--hourH) - 1px),
-          #1e1e1e var(--hourH)
-        );
-    }
-    .time-col .hour-label {
-      position: absolute; left: 6px; font-size:.78rem; color:#a7a7a7;
-      transform: translateY(-50%);
-    }
+    /* Brighter palette (bg + text) */
+    .tone-1{--chip:#06B6D4;--fg:#001318} /* cyan */
+    .tone-2{--chip:#10B981;--fg:#00150e} /* green */
+    .tone-3{--chip:#F59E0B;--fg:#1b0f00} /* amber */
+    .tone-4{--chip:#F97316;--fg:#1a0900} /* orange */
+    .tone-5{--chip:#A78BFA;--fg:#0e0a1a} /* violet */
+    .tone-6{--chip:#EC4899;--fg:#220713} /* pink  */
+    .tone-7{--chip:#4ADE80;--fg:#041307} /* light green */
+    .tone-8{--chip:#60A5FA;--fg:#0a1a35} /* light blue */
 
-    /* Day column header + body */
-    .day-col { display:flex; flex-direction:column; }
-    .day-head { background:#0d0d0d; border:1px solid #1e1e1e; padding:.45rem .5rem; border-radius:6px; margin-bottom:6px; }
-    .dow { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; color:var(--brand-teal); }
-    .date { font-size:.85rem; color:#bdbdbd; }
+    /* Archives = LIGHTER blue and readable text */
+    .is-archive{--chip:#93C5FD;--fg:#0b1f3f}
 
-    .day-body {
-      display: grid;
-      grid-template-rows: repeat(96, var(--qH)); /* 96 x 15min rows */
-      position: relative;
-      height: calc(var(--hourH) * 24);
-      border:1px solid #1c1c1c; border-radius:6px; overflow:hidden;
-      background:
-        repeating-linear-gradient(
-          to bottom,
-          #0b0b0b 0,
-          #0b0b0b calc(var(--hourH) - 1px),
-          #1a1a1a calc(var(--hourH) - 1px),
-          #1a1a1a var(--hourH)
-        );
-    }
-
-    /* Show block placed on the grid */
-    .show {
-      grid-column: 1 / -1;
-      margin: 2px 4px;
-      background: var(--chip, #22D3EE);   /* FULL block uses the bright colour */
-      color: var(--fg, #fff);              /* readable text per tone */
-      border-radius:6px; padding:.42rem .55rem; overflow:hidden;
-      box-shadow: inset 0 0 0 2px rgba(0,0,0,.25), 0 1px 0 rgba(0,0,0,.35);
-    }
-    .show .time { font-size:.78rem; opacity:.95; }
-    .show .title { font-weight:800; line-height:1.2; }
-    .show .host { font-size:.85rem; opacity:.9; }
-
-    /* Brighter palette (set both background and text colour per tone) */
-    .tone-1 { --chip:#06B6D4; --fg:#001318; } /* cyan */
-    .tone-2 { --chip:#10B981; --fg:#00150e; } /* green */
-    .tone-3 { --chip:#F59E0B; --fg:#1b0f00; } /* amber */
-    .tone-4 { --chip:#F97316; --fg:#1a0900; } /* orange */
-    .tone-5 { --chip:#A78BFA; --fg:#0e0a1a; } /* violet */
-    .tone-6 { --chip:#EC4899; --fg:#220713; } /* pink */
-    .tone-7 { --chip:#4ADE80; --fg:#041307; } /* light green */
-    .tone-8 { --chip:#60A5FA; --fg:#0a1a35; } /* light blue */
-
-    /* Archives = lighter blue block always */
-    .is-archive { --chip:#60A5FA; --fg:#0a1a35; }
-
-    @media (max-width: 980px) {
-      .week-grid { grid-template-columns: 48px 1fr; }
-      .day-col { grid-column: 2; }
-      .time-col { grid-column: 1; }
+    @media (max-width:980px){
+      .week-grid{grid-template-columns:48px 1fr}
+      .day-col{grid-column:2}
+      .time-col{grid-column:1}
     }
   </style>
 
@@ -207,28 +124,18 @@
       <a href="schedule.html" class="nav-link">SCHEDULE</a>
       <a href="merch.html" class="nav-link">MERCH</a>
 
-      <a href="https://facebook.com/cutterschoiceradio" target="_blank" class="social-icon">
-        <i class="fab fa-facebook-f"></i>
-      </a>
-      <a href="https://instagram.com/cutterschoiceradio" target="_blank" class="social-icon">
-        <i class="fab fa-instagram"></i>
-      </a>
+      <a href="https://facebook.com/cutterschoiceradio" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://instagram.com/cutterschoiceradio" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
 
       <img src="/images/alexa-logo.webp" alt="Alexa" class="icon-img" loading="lazy">
-      <a href="https://tunein.com/radio/Cutters-Choice-Radio-s344746/" target="_blank">
-        <img src="/images/tunein-logo.png" alt="TuneIn" class="icon-img" loading="lazy">
-      </a>
+      <a href="https://tunein.com/radio/Cutters-Choice-Radio-s344746/" target="_blank"><img src="/images/tunein-logo.png" alt="TuneIn" class="icon-img" loading="lazy"></a>
 
       <div class="nav-onemusic">
-        <a href="https://onemusicnz.com" target="_blank" rel="noopener">
-          <img src="/images/ONEMUSICLOGO.png" alt="We’re licensed to play OneMusic NZ" loading="lazy">
-        </a>
+        <a href="https://onemusicnz.com" target="_blank" rel="noopener"><img src="/images/ONEMUSICLOGO.png" alt="We’re licensed to play OneMusic NZ" loading="lazy"></a>
       </div>
 
       <google-cast-button></google-cast-button>
-      <button id="manualCastBtn" title="Cast this stream">
-        <i class="fab fa-chromecast"></i>
-      </button>
+      <button id="manualCastBtn" title="Cast this stream"><i class="fab fa-chromecast"></i></button>
     </div>
   </nav>
 
@@ -246,7 +153,7 @@
         <span class="chip" style="background:#4ADE80"></span>
         <span class="chip" style="background:#60A5FA"></span>
         <small style="opacity:.85;">Order of shows each day</small>
-        <span class="chip" style="background:#60A5FA;margin-left:.5rem;"></span>
+        <span class="chip" style="background:#93C5FD;margin-left:.5rem;"></span>
         <small style="opacity:.85;">Archives</small>
       </div>
     </div>
@@ -280,68 +187,39 @@
   </footer>
 
   <script>
-    // ==== API (same auth style as homepage) ====
-    const API_KEY = "pk_0b8abc6f834b444f949f727e88a728e0";
-    const STATION_ID = "cutters-choice-radio";
-    const BASE_URL = "https://api.radiocult.fm/api";
-    const rcFetch = async (path) => {
+    /* ===== API (same style as homepage) ===== */
+    const API_KEY   = "pk_0b8abc6f834b444f949f727e88a728e0";
+    const STATION_ID= "cutters-choice-radio";
+    const BASE_URL  = "https://api.radiocult.fm/api";
+    const rcFetch   = async (path) => {
       const res = await fetch(BASE_URL + path, { headers: { "x-api-key": API_KEY } });
       if (!res.ok) throw new Error(`Fetch error ${res.status}`);
       return res.json();
     };
 
-    // ==== DATE HELPERS ====
+    /* ===== Date helpers ===== */
     const pad = n => String(n).padStart(2,"0");
     const fmtMonth = d => new Intl.DateTimeFormat(undefined,{month:"long",year:"numeric"}).format(d);
-    const startOfWeek = (date) => {
-      const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
-      const day = (d.getUTCDay() + 6) % 7; // Monday=0
-      d.setUTCDate(d.getUTCDate() - day);
-      return d;
-    };
-    const endOfWeek = (date) => { const d = new Date(date); d.setUTCDate(d.getUTCDate()+6); d.setUTCHours(23,59,59,999); return d; };
+    const startOfWeek = (date) => { const d=new Date(Date.UTC(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())); const day=(d.getUTCDay()+6)%7; d.setUTCDate(d.getUTCDate()-day); return d; };
+    const endOfWeek = (date) => { const d=new Date(date); d.setUTCDate(d.getUTCDate()+6); d.setUTCHours(23,59,59,999); return d; };
     const startOfMonth = (date) => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
-    const endOfMonth = (date) => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth()+1, 0, 23,59,59,999));
-    const splitMonthIntoWeeks = (anyDay) => {
-      const weeks = [];
-      let wStart = startOfWeek(startOfMonth(anyDay));
-      const lastDay = endOfWeek(endOfMonth(anyDay));
-      while (wStart <= lastDay) {
-        const wEnd = endOfWeek(wStart);
-        weeks.push({ start: new Date(wStart), end: new Date(wEnd) });
-        wStart.setUTCDate(wStart.getUTCDate()+7);
-      }
-      return weeks;
-    };
-    const inRange = (d, a, b) => d >= a && d <= b;
+    const endOfMonth   = (date) => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth()+1, 0, 23,59,59,999));
+    const inRange = (d,a,b)=> d>=a && d<=b;
+    const splitMonthIntoWeeks = (anyDay) => { const weeks=[]; let w=startOfWeek(startOfMonth(anyDay)); const last=endOfWeek(endOfMonth(anyDay)); while(w<=last){weeks.push({start:new Date(w),end:endOfWeek(w)}); w.setUTCDate(w.getUTCDate()+7);} return weeks; };
 
-    // yyyy-mm-dd string in chosen tz (or local)
-    const ymdInTz = (d, tz) => new Intl.DateTimeFormat('en-CA', {
-      timeZone: tz === 'local' ? undefined : tz, year:'numeric', month:'2-digit', day:'2-digit'
+    // yyyy-mm-dd in chosen tz
+    const ymdInTz = (d, tz) => new Intl.DateTimeFormat('en-CA',{
+      timeZone: tz==='local'?undefined:tz, year:'numeric',month:'2-digit',day:'2-digit'
     }).format(d);
 
-    // minutes since start of day in chosen tz
+    // minutes since day start in tz
     const minutesInDay = (d, tz) => {
-      const parts = new Intl.DateTimeFormat('en-GB', {
-        timeZone: tz === 'local' ? undefined : tz, hour:'2-digit', minute:'2-digit', hour12:false
-      }).formatToParts(d);
-      let hh=0, mm=0;
-      for (const p of parts) {
-        if (p.type === 'hour') hh = parseInt(p.value,10);
-        if (p.type === 'minute') mm = parseInt(p.value,10);
-      }
-      return hh*60 + mm;
+      const parts = new Intl.DateTimeFormat('en-GB',{ timeZone: tz==='local'?undefined:tz, hour:'2-digit', minute:'2-digit', hour12:false }).formatToParts(d);
+      let hh=0,mm=0; for(const p of parts){ if(p.type==='hour') hh=parseInt(p.value,10); if(p.type==='minute') mm=parseInt(p.value,10); }
+      return hh*60+mm;
     };
 
-    // increment yyyy-mm-dd
-    const incYMD = (s) => {
-      const [y,m,d] = s.split('-').map(Number);
-      const dt = new Date(Date.UTC(y, m-1, d));
-      dt.setUTCDate(dt.getUTCDate()+1);
-      return `${dt.getUTCFullYear()}-${pad(dt.getUTCMonth()+1)}-${pad(dt.getUTCDate())}`;
-    };
-
-    // ==== FETCH MONTH ====
+    /* ===== Fetch schedule ===== */
     async function fetchMonthRange(rangeStartISO, rangeEndISO) {
       const { schedules = [] } = await rcFetch(`/station/${STATION_ID}/schedule?startDate=${encodeURIComponent(rangeStartISO)}&endDate=${encodeURIComponent(rangeEndISO)}`);
       return schedules.map(s => ({
@@ -350,126 +228,122 @@
         title: s.title || s.content?.title || s.content?.name || "Untitled show",
         host:  (Array.isArray(s.content?.presenters) ? s.content.presenters.map(p => p.name).filter(Boolean).join(", ") : "")
                || s.metadata?.artist || s.dj || "",
-        art:   s.metadata?.artwork?.default || s.metadata?.artwork?.original || s.image || "",
         raw: s
       })).filter(s => s.start && s.end);
     }
 
-    // ==== COLOURS ====
+    /* ===== Colour rules ===== */
     const ORDER_CLASSES = ['tone-1','tone-2','tone-3','tone-4','tone-5','tone-6','tone-7','tone-8'];
     const isArchive = (s) => {
       const blob = `${s.title||''} ${s.host||''}`.toLowerCase();
       return blob.includes('archive') || blob.includes('archives');
     };
 
-    function fmtTime(d, tz) {
-      if (tz === "local") return new Intl.DateTimeFormat(undefined,{hour:"2-digit",minute:"2-digit"}).format(d);
-      return new Intl.DateTimeFormat(undefined,{hour:"2-digit",minute:"2-digit", timeZone: tz}).format(d);
-    }
-    function escapeHtml(str){return String(str).replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]));}
+    /* ===== Split overnight and fill gaps with Archives ===== */
+    const incYMD = (s) => { const [y,m,d]=s.split('-').map(Number); const dt=new Date(Date.UTC(y,m-1,d)); dt.setUTCDate(dt.getUTCDate()+1); return `${dt.getUTCFullYear()}-${pad(dt.getUTCMonth()+1)}-${pad(dt.getUTCDate())}`; };
 
-    function buildTimeRuler() {
-      const col = document.createElement('div');
-      col.className = 'time-col';
-      for (let h=0; h<24; h++) {
-        const label = document.createElement('div');
-        label.className = 'hour-label';
-        label.style.top = `calc(${h} * var(--hourH))`;
-        label.textContent = String(h).padStart(2,'0') + ':00';
-        col.appendChild(label);
-      }
-      return col;
-    }
-
-    function reorderWeeksWithCurrentFirst(weeks) {
-      const today = new Date();
-      const idx = weeks.findIndex(w => inRange(today, w.start, w.end));
-      if (idx === -1) return weeks;
-      return [weeks[idx], ...weeks.slice(idx+1), ...weeks.slice(0, idx)];
-    }
-
-    // Split shows across days (in the chosen tz) so overnight blocks continue
     function splitShowsIntoDailySegments(shows, tz) {
-      const buckets = new Map(); // key yyyy-mm-dd -> segments[]
+      const map = new Map(); // key yyyy-mm-dd -> [{segStartMin, segEndMin, ...}]
       for (const s of shows) {
-        const st = new Date(s.start);
-        const en = new Date(s.end);
-        let kStart = ymdInTz(st, tz);
-        const kEnd  = ymdInTz(en, tz);
-
+        const st = new Date(s.start), en = new Date(s.end);
+        const kStart = ymdInTz(st, tz), kEnd = ymdInTz(en, tz);
         let key = kStart;
         while (true) {
-          const segStartMin = (key === kStart) ? minutesInDay(st, tz) : 0;
-          const segEndMin   = (key === kEnd)  ? minutesInDay(en, tz) : 24*60;
-
-          const seg = {
-            ...s,
-            segStartMin,
-            segEndMin: Math.max(segStartMin + 15, segEndMin), // min 15 mins for visibility
-            archive: isArchive(s),
-            continued: key !== kStart
-          };
-          if (!buckets.has(key)) buckets.set(key, []);
-          buckets.get(key).push(seg);
-
-          if (key === kEnd) break;
+          const segStartMin = (key===kStart) ? minutesInDay(st, tz) : 0;
+          const segEndMin   = (key===kEnd)   ? minutesInDay(en, tz) : 24*60;
+          const seg = { ...s, segStartMin, segEndMin: Math.max(segStartMin+15, segEndMin), archive: isArchive(s) };
+          if (!map.has(key)) map.set(key, []);
+          map.get(key).push(seg);
+          if (key===kEnd) break;
           key = incYMD(key);
         }
       }
-      // sort each day by start
-      for (const [, arr] of buckets) arr.sort((a,b)=> a.segStartMin - b.segStartMin);
-      return buckets;
+      // sort and fill gaps with archive segments
+      for (const [key, arr] of map) {
+        arr.sort((a,b)=> a.segStartMin - b.segStartMin);
+        const filled = [];
+        let cur = 0;
+        for (const seg of arr) {
+          if (seg.segStartMin > cur) {
+            filled.push({
+              title: "Choice Cuts Archives",
+              host: "",
+              archive: true,
+              segStartMin: cur,
+              segEndMin: seg.segStartMin
+            });
+          }
+          filled.push(seg);
+          cur = Math.max(cur, seg.segEndMin);
+        }
+        if (cur < 24*60) {
+          filled.push({ title: "Choice Cuts Archives", host: "", archive: true, segStartMin: cur, segEndMin: 24*60 });
+        }
+        map.set(key, filled);
+      }
+      return map;
     }
 
-    function renderMonth(date, shows, tz) {
-      const mount = document.getElementById("weeksStack");
-      mount.innerHTML = "";
-      document.getElementById("monthTitle").textContent = fmtMonth(date);
+    /* ===== Render ===== */
+    const fmtTime = (d, tz) => tz==="local"
+      ? new Intl.DateTimeFormat(undefined,{hour:"2-digit",minute:"2-digit"}).format(d)
+      : new Intl.DateTimeFormat(undefined,{hour:"2-digit",minute:"2-digit",timeZone:tz}).format(d);
 
-      // Create day buckets with overnight splitting
+    const escapeHtml = (str)=> String(str).replace(/[&<>"]/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]));
+
+    function buildTimeRuler(){
+      const col=document.createElement('div'); col.className='time-col';
+      for(let h=0;h<24;h++){ const lab=document.createElement('div'); lab.className='hour-label'; lab.style.top=`calc(${h} * var(--hourH))`; lab.textContent=String(h).padStart(2,'0')+':00'; col.appendChild(lab); }
+      return col;
+    }
+
+    const reorderWeeksWithCurrentFirst = (weeks) => {
+      const today = new Date();
+      const i = weeks.findIndex(w => inRange(today, w.start, w.end));
+      return i===-1 ? weeks : [weeks[i], ...weeks.slice(i+1), ...weeks.slice(0,i)];
+    };
+
+    function renderMonth(date, shows, tz){
+      const mount=document.getElementById('weeksStack'); mount.innerHTML='';
+      document.getElementById('monthTitle').textContent = fmtMonth(date);
+
       const buckets = splitShowsIntoDailySegments(shows, tz);
 
       let weeks = splitMonthIntoWeeks(date);
-      weeks = reorderWeeksWithCurrentFirst(weeks);  // current week appears first
+      weeks = reorderWeeksWithCurrentFirst(weeks);
 
-      weeks.forEach(({start}) => {
-        const weekEl = document.createElement("section");
-        weekEl.className = "week-grid";
-
-        // Time ruler
+      weeks.forEach(({start})=>{
+        const weekEl=document.createElement('section'); weekEl.className='week-grid';
         weekEl.appendChild(buildTimeRuler());
 
-        // Build each day
-        const d = new Date(start);
-        for (let i=0;i<7;i++) {
-          const dayCol = document.createElement("div");
-          dayCol.className = "day-col";
-          const head = document.createElement("div");
-          head.className = "day-head";
-          const dow = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][(d.getUTCDay()+6)%7];
-          head.innerHTML = `<div class="dow">${dow}</div><div class="date">${d.getUTCDate()} ${d.toLocaleString(undefined,{month:'short'})}</div>`;
-          const body = document.createElement("div");
-          body.className = "day-body";
+        const d=new Date(start);
+        for(let i=0;i<7;i++){
+          const dayCol=document.createElement('div'); dayCol.className='day-col';
+          const head=document.createElement('div'); head.className='day-head';
+          const dow=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][(d.getUTCDay()+6)%7];
+          head.innerHTML=`<div class="dow">${dow}</div><div class="date">${d.getUTCDate()} ${d.toLocaleString(undefined,{month:'short'})}</div>`;
+          const body=document.createElement('div'); body.className='day-body';
 
-          const keyTz = ymdInTz(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())), tz);
-          const todays = buckets.get(keyTz) || [];
+          const dayKey = ymdInTz(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())), tz);
+          const segments = buckets.get(dayKey) || [];
 
-          // Assign palette per *non-archive* order within the day
+          // colour order index advances only on non-archives
           let orderIndex = 0;
-          todays.forEach(seg => {
-            const show = document.createElement('div');
-            const startQ = Math.floor(seg.segStartMin / 15);
-            const spanQ  = Math.max(1, Math.ceil((seg.segEndMin - seg.segStartMin) / 15));
-            show.className = "show " + (seg.archive ? 'is-archive' : ORDER_CLASSES[(orderIndex++) % ORDER_CLASSES.length]);
-            show.style.gridRow = `${startQ + 1} / span ${spanQ}`;
-            const st = new Date(seg.start), en = new Date(seg.end);
+
+          segments.forEach(seg=>{
+            const startQ = Math.floor(seg.segStartMin/15);
+            const spanQ  = Math.max(1, Math.ceil((seg.segEndMin - seg.segStartMin)/15));
+            const show=document.createElement('div');
+            show.className='show ' + (seg.archive ? 'is-archive' : ORDER_CLASSES[(orderIndex++) % ORDER_CLASSES.length]);
+            show.style.gridRow = `${startQ+1} / span ${spanQ}`;
+            const st = new Date(seg.start || `${dayKey}T00:00:00Z`), en = new Date(seg.end || `${dayKey}T23:59:59Z`);
             show.innerHTML = `
               <div class="time">${fmtTime(st, tz)}–${fmtTime(en, tz)}</div>
               <div class="title">${escapeHtml(seg.title)}</div>
               ${seg.host ? `<div class="host">${escapeHtml(seg.host)}</div>` : ""}
             `;
+            if (seg.archive) { orderIndex--; } // archives don't consume colour slots
             body.appendChild(show);
-            if (seg.archive) { orderIndex--; } // don't advance the order palette for archives
           });
 
           dayCol.append(head, body);
@@ -481,46 +355,33 @@
       });
     }
 
-    // ==== STATE & CONTROLS ====
+    /* ===== State & controls ===== */
     let current = new Date();
     let tzMode = "local";
 
-    async function loadMonth() {
-      const from = startOfWeek(startOfMonth(current)).toISOString();
-      const to   = endOfWeek(endOfMonth(current)).toISOString();
-      try {
-        const shows = await fetchMonthRange(from, to);
-        renderMonth(current, shows, tzMode);
-      } catch (e) {
+    async function loadMonth(){
+      const from=startOfWeek(startOfMonth(current)).toISOString();
+      const to=endOfWeek(endOfMonth(current)).toISOString();
+      try{
+        const shows=await fetchMonthRange(from,to);
+        renderMonth(current,shows,tzMode);
+      }catch(e){
         console.error(e);
-        document.getElementById("weeksStack").innerHTML = "<p>Couldn’t load schedule.</p>";
+        document.getElementById('weeksStack').innerHTML="<p>Couldn’t load schedule.</p>";
       }
     }
 
-    document.getElementById("prevMonthBtn").addEventListener("click", () => {
-      current = new Date(Date.UTC(current.getUTCFullYear(), current.getUTCMonth()-1, 1));
-      loadMonth();
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    });
-    document.getElementById("nextMonthBtn").addEventListener("click", () => {
-      current = new Date(Date.UTC(current.getUTCFullYear(), current.getUTCMonth()+1, 1));
-      loadMonth();
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    });
-    document.getElementById("todayBtn").addEventListener("click", () => {
-      current = new Date();
-      loadMonth();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-    document.getElementById("tzSelect").addEventListener("change", e => { tzMode = e.target.value; loadMonth(); });
+    document.getElementById('prevMonthBtn').addEventListener('click',()=>{ current=new Date(Date.UTC(current.getUTCFullYear(),current.getUTCMonth()-1,1)); loadMonth(); window.scrollTo({top:0}); });
+    document.getElementById('nextMonthBtn').addEventListener('click',()=>{ current=new Date(Date.UTC(current.getUTCFullYear(),current.getUTCMonth()+1,1)); loadMonth(); window.scrollTo({top:0}); });
+    document.getElementById('todayBtn').addEventListener('click',()=>{ current=new Date(); loadMonth(); window.scrollTo({top:0,behavior:'smooth'}); });
+    document.getElementById('tzSelect').addEventListener('change',e=>{ tzMode=e.target.value; loadMonth(); });
 
-    // Boot
     loadMonth();
 
-    // Manual cast fallback (optional)
-    document.getElementById('manualCastBtn')?.addEventListener('click', () => {
+    // manual cast fallback
+    document.getElementById('manualCastBtn')?.addEventListener('click',()=>{
       const context = cast.framework.CastContext.getInstance();
-      context.requestSession().catch(err => console.error('Fallback session error', err));
+      context.requestSession().catch(err=>console.error('Fallback session error',err));
     });
   </script>
 </body>
