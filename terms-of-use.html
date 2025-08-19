@@ -16,8 +16,8 @@
       --brand-teal: #5A8785;
 
       /* schedule layout scale */
-      --hourH: 52px;         /* height per hour (taller makes blocks bigger) */
-      --qH: calc(var(--hourH) / 4); /* quarter-hour track */
+      --hourH: 52px;                 /* height per hour */
+      --qH: calc(var(--hourH) / 4);  /* quarter-hour track */
     }
 
     /* NAVIGATION BAR */
@@ -147,31 +147,31 @@
         );
     }
 
-    /* Show block placed on the grid (no absolute top/height -> perfect alignment) */
+    /* Show block placed on the grid */
     .show {
       grid-column: 1 / -1;
       margin: 2px 4px;
-      border-left:8px solid var(--chip, #22d3ee);
-      background: var(--bg, #11212e);
-      border-radius:6px; padding:.35rem .5rem; overflow:hidden;
-      box-shadow: 0 1px 0 rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.04);
+      background: var(--chip, #22D3EE);   /* FULL block uses the bright colour */
+      color: var(--fg, #fff);              /* readable text per tone */
+      border-radius:6px; padding:.42rem .55rem; overflow:hidden;
+      box-shadow: inset 0 0 0 2px rgba(0,0,0,.25), 0 1px 0 rgba(0,0,0,.35);
     }
-    .show .time { font-size:.78rem; color:#e5e5e5; }
-    .show .title { font-weight:800; color:#fff; line-height:1.2; }
-    .show .host { font-size:.85rem; color:#d1d1d1; }
+    .show .time { font-size:.78rem; opacity:.95; }
+    .show .title { font-weight:800; line-height:1.2; }
+    .show .host { font-size:.85rem; opacity:.9; }
 
-    /* Brighter palette */
-    .tone-1 { --chip:#22D3EE; --bg:#083344; } /* cyan */
-    .tone-2 { --chip:#34D399; --bg:#062f25; } /* green */
-    .tone-3 { --chip:#F59E0B; --bg:#261a03; } /* amber */
-    .tone-4 { --chip:#F97316; --bg:#2a1304; } /* orange */
-    .tone-5 { --chip:#A78BFA; --bg:#1c1630; } /* violet */
-    .tone-6 { --chip:#EC4899; --bg:#2b0f20; } /* pink */
-    .tone-7 { --chip:#4ADE80; --bg:#0f2714; } /* light green */
-    .tone-8 { --chip:#60A5FA; --bg:#0a1a35; } /* light blue */
+    /* Brighter palette (set both background and text colour per tone) */
+    .tone-1 { --chip:#06B6D4; --fg:#001318; } /* cyan */
+    .tone-2 { --chip:#10B981; --fg:#00150e; } /* green */
+    .tone-3 { --chip:#F59E0B; --fg:#1b0f00; } /* amber */
+    .tone-4 { --chip:#F97316; --fg:#1a0900; } /* orange */
+    .tone-5 { --chip:#A78BFA; --fg:#0e0a1a; } /* violet */
+    .tone-6 { --chip:#EC4899; --fg:#220713; } /* pink */
+    .tone-7 { --chip:#4ADE80; --fg:#041307; } /* light green */
+    .tone-8 { --chip:#60A5FA; --fg:#0a1a35; } /* light blue */
 
-    /* Archives = BLUE, always */
-    .is-archive { --chip:#3B82F6; --bg:#0b1f3f; }
+    /* Archives = lighter blue block always */
+    .is-archive { --chip:#60A5FA; --fg:#0a1a35; }
 
     @media (max-width: 980px) {
       .week-grid { grid-template-columns: 48px 1fr; }
@@ -237,17 +237,17 @@
     <div class="utilities">
       <button class="ccr-btn" id="todayBtn" title="Jump to current week">This Week</button>
       <div class="legend">
-        <span class="chip" style="background:#22D3EE"></span>
-        <span class="chip" style="background:#34D399"></span>
+        <span class="chip" style="background:#06B6D4"></span>
+        <span class="chip" style="background:#10B981"></span>
         <span class="chip" style="background:#F59E0B"></span>
         <span class="chip" style="background:#F97316"></span>
         <span class="chip" style="background:#A78BFA"></span>
         <span class="chip" style="background:#EC4899"></span>
         <span class="chip" style="background:#4ADE80"></span>
         <span class="chip" style="background:#60A5FA"></span>
-        <small style="opacity:.8;">Order of shows each day</small>
-        <span class="chip" style="background:#3B82F6;margin-left:.5rem;"></span>
-        <small style="opacity:.8;">Archives</small>
+        <small style="opacity:.85;">Order of shows each day</small>
+        <span class="chip" style="background:#60A5FA;margin-left:.5rem;"></span>
+        <small style="opacity:.85;">Archives</small>
       </div>
     </div>
   </header>
@@ -315,7 +315,7 @@
     };
     const inRange = (d, a, b) => d >= a && d <= b;
 
-    // format YYYY-MM-DD in chosen tz (or local)
+    // yyyy-mm-dd string in chosen tz (or local)
     const ymdInTz = (d, tz) => new Intl.DateTimeFormat('en-CA', {
       timeZone: tz === 'local' ? undefined : tz, year:'numeric', month:'2-digit', day:'2-digit'
     }).format(d);
@@ -331,6 +331,14 @@
         if (p.type === 'minute') mm = parseInt(p.value,10);
       }
       return hh*60 + mm;
+    };
+
+    // increment yyyy-mm-dd
+    const incYMD = (s) => {
+      const [y,m,d] = s.split('-').map(Number);
+      const dt = new Date(Date.UTC(y, m-1, d));
+      dt.setUTCDate(dt.getUTCDate()+1);
+      return `${dt.getUTCFullYear()}-${pad(dt.getUTCMonth()+1)}-${pad(dt.getUTCDate())}`;
     };
 
     // ==== FETCH MONTH ====
@@ -354,7 +362,6 @@
       return blob.includes('archive') || blob.includes('archives');
     };
 
-    // ==== RENDER ====
     function fmtTime(d, tz) {
       if (tz === "local") return new Intl.DateTimeFormat(undefined,{hour:"2-digit",minute:"2-digit"}).format(d);
       return new Intl.DateTimeFormat(undefined,{hour:"2-digit",minute:"2-digit", timeZone: tz}).format(d);
@@ -381,20 +388,46 @@
       return [weeks[idx], ...weeks.slice(idx+1), ...weeks.slice(0, idx)];
     }
 
+    // Split shows across days (in the chosen tz) so overnight blocks continue
+    function splitShowsIntoDailySegments(shows, tz) {
+      const buckets = new Map(); // key yyyy-mm-dd -> segments[]
+      for (const s of shows) {
+        const st = new Date(s.start);
+        const en = new Date(s.end);
+        let kStart = ymdInTz(st, tz);
+        const kEnd  = ymdInTz(en, tz);
+
+        let key = kStart;
+        while (true) {
+          const segStartMin = (key === kStart) ? minutesInDay(st, tz) : 0;
+          const segEndMin   = (key === kEnd)  ? minutesInDay(en, tz) : 24*60;
+
+          const seg = {
+            ...s,
+            segStartMin,
+            segEndMin: Math.max(segStartMin + 15, segEndMin), // min 15 mins for visibility
+            archive: isArchive(s),
+            continued: key !== kStart
+          };
+          if (!buckets.has(key)) buckets.set(key, []);
+          buckets.get(key).push(seg);
+
+          if (key === kEnd) break;
+          key = incYMD(key);
+        }
+      }
+      // sort each day by start
+      for (const [, arr] of buckets) arr.sort((a,b)=> a.segStartMin - b.segStartMin);
+      return buckets;
+    }
+
     function renderMonth(date, shows, tz) {
       const mount = document.getElementById("weeksStack");
       mount.innerHTML = "";
       document.getElementById("monthTitle").textContent = fmtMonth(date);
 
-      // Bucket by day in the chosen tz and sort by start
-      const buckets = new Map();
-      shows.forEach(s => {
-        const st = new Date(s.start);
-        const key = ymdInTz(st, tz);
-        if (!buckets.has(key)) buckets.set(key, []);
-        buckets.get(key).push(s);
-      });
-      for (const [, arr] of buckets) arr.sort((a,b)=> new Date(a.start) - new Date(b.start));
+      // Create day buckets with overnight splitting
+      const buckets = splitShowsIntoDailySegments(shows, tz);
 
       let weeks = splitMonthIntoWeeks(date);
       weeks = reorderWeeksWithCurrentFirst(weeks);  // current week appears first
@@ -421,25 +454,22 @@
           const keyTz = ymdInTz(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())), tz);
           const todays = buckets.get(keyTz) || [];
 
-          todays.forEach((s, idx) => {
-            const st = new Date(s.start), en = new Date(s.end);
-            const startMin = minutesInDay(st, tz);
-            let endMin = minutesInDay(en, tz);
-            if (endMin <= startMin) endMin = 24*60; // spans midnight -> cap to end of day
-
-            const startQ = Math.floor(startMin / 15);
-            const spanQ = Math.max(1, Math.ceil((endMin - startMin) / 15));
-
+          // Assign palette per *non-archive* order within the day
+          let orderIndex = 0;
+          todays.forEach(seg => {
             const show = document.createElement('div');
-            show.className = "show " + (isArchive(s) ? 'is-archive' : ORDER_CLASSES[idx % ORDER_CLASSES.length]);
+            const startQ = Math.floor(seg.segStartMin / 15);
+            const spanQ  = Math.max(1, Math.ceil((seg.segEndMin - seg.segStartMin) / 15));
+            show.className = "show " + (seg.archive ? 'is-archive' : ORDER_CLASSES[(orderIndex++) % ORDER_CLASSES.length]);
             show.style.gridRow = `${startQ + 1} / span ${spanQ}`;
-
+            const st = new Date(seg.start), en = new Date(seg.end);
             show.innerHTML = `
               <div class="time">${fmtTime(st, tz)}–${fmtTime(en, tz)}</div>
-              <div class="title">${escapeHtml(s.title)}</div>
-              ${s.host ? `<div class="host">${escapeHtml(s.host)}</div>` : ""}
+              <div class="title">${escapeHtml(seg.title)}</div>
+              ${seg.host ? `<div class="host">${escapeHtml(seg.host)}</div>` : ""}
             `;
             body.appendChild(show);
+            if (seg.archive) { orderIndex--; } // don't advance the order palette for archives
           });
 
           dayCol.append(head, body);
