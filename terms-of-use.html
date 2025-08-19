@@ -10,9 +10,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-  <!-- INLINE NAV STYLING (exact copy from index.html) -->
+  <!-- NAV styling copied from index.html for a perfect match -->
   <style>
-    :root { --brand-teal: #5A8785; --hourH: 48px; } /* --hourH controls hour height */
+    :root {
+      --brand-teal: #5A8785;
+
+      /* schedule layout scale */
+      --hourH: 52px;         /* height per hour (taller makes blocks bigger) */
+      --qH: calc(var(--hourH) / 4); /* quarter-hour track */
+    }
 
     /* NAVIGATION BAR */
     #main-nav {
@@ -62,7 +68,9 @@
     }
 
     /* PAGE-SPECIFIC STYLES */
-    body { background:#000; color:#fafafa; }
+    html, body { background:#000; color:#fafafa; }
+    * { box-sizing: border-box; }
+
     .page-header {
       display:flex; align-items:center; justify-content:space-between;
       padding:.5rem .75rem; border-bottom:2px solid #000; background: var(--brand-teal);
@@ -72,7 +80,7 @@
     }
     .utilities { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; }
     .legend { display:flex; gap:.5rem; align-items:center; }
-    .chip { display:inline-block; width:.75rem; height:.75rem; border-radius:2px; border:1px solid #1f1f1f; }
+    .chip { width:.9rem; height:.9rem; border-radius:2px; border:1px solid #1f1f1f; display:inline-block; }
 
     .month-controls {
       display:flex; gap:.5rem; align-items:center; justify-content:space-between;
@@ -94,91 +102,85 @@
       border:2px solid var(--brand-teal);
       border-radius:8px;
       overflow:hidden;
-      background:#111;
+      background:#0f0f0f;
       padding: 6px;
     }
 
-    /* Time ruler */
+    /* Time ruler column */
     .time-col {
       position: relative;
       height: calc(var(--hourH) * 24);
+      border:1px solid #1c1c1c; border-radius:6px;
       background:
         repeating-linear-gradient(
           to bottom,
-          #121212 0px,
-          #121212 1px,
-          transparent 1px,
-          transparent var(--hourH)
+          #0b0b0b 0,
+          #0b0b0b calc(var(--hourH) - 1px),
+          #1e1e1e calc(var(--hourH) - 1px),
+          #1e1e1e var(--hourH)
         );
     }
     .time-col .hour-label {
-      position: absolute; left: 6px; font-size:.75rem; color:#a7a7a7;
+      position: absolute; left: 6px; font-size:.78rem; color:#a7a7a7;
       transform: translateY(-50%);
     }
 
-    /* Day column */
+    /* Day column header + body */
     .day-col { display:flex; flex-direction:column; }
     .day-head { background:#0d0d0d; border:1px solid #1e1e1e; padding:.45rem .5rem; border-radius:6px; margin-bottom:6px; }
     .dow { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; color:var(--brand-teal); }
     .date { font-size:.85rem; color:#bdbdbd; }
 
     .day-body {
+      display: grid;
+      grid-template-rows: repeat(96, var(--qH)); /* 96 x 15min rows */
       position: relative;
       height: calc(var(--hourH) * 24);
       border:1px solid #1c1c1c; border-radius:6px; overflow:hidden;
       background:
         repeating-linear-gradient(
           to bottom,
-          #0b0b0b 0px,
-          #0b0b0b 1px,
           #0b0b0b 0,
-          #0b0b0b var(--hourH)
+          #0b0b0b calc(var(--hourH) - 1px),
+          #1a1a1a calc(var(--hourH) - 1px),
+          #1a1a1a var(--hourH)
         );
-    }
-    .day-body::after {
-      /* faint quarter-hour ticks (optional; comment out if you want only hourly) */
-      content: ""; position:absolute; inset:0;
-      background:
-        repeating-linear-gradient(
-          to bottom,
-          transparent 0,
-          transparent calc(var(--hourH) - 1px),
-          #151515 calc(var(--hourH) - 1px),
-          #151515 var(--hourH)
-        );
-      pointer-events:none;
     }
 
-    /* Show block placed by absolute positioning */
+    /* Show block placed on the grid (no absolute top/height -> perfect alignment) */
     .show {
-      position:absolute; left:4px; right:4px;
-      border-left:6px solid var(--chip, #5A8785);
-      background: color-mix(in srgb, var(--chip, #5A8785) 18%, #0b0b0b);
-      box-shadow: 0 1px 0 rgba(0,0,0,.4);
+      grid-column: 1 / -1;
+      margin: 2px 4px;
+      border-left:8px solid var(--chip, #22d3ee);
+      background: var(--bg, #11212e);
       border-radius:6px; padding:.35rem .5rem; overflow:hidden;
+      box-shadow: 0 1px 0 rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.04);
     }
-    .show .time { font-size:.78rem; color:#d0d0d0; }
+    .show .time { font-size:.78rem; color:#e5e5e5; }
     .show .title { font-weight:800; color:#fff; line-height:1.2; }
-    .show .host { font-size:.85rem; color:#b7b7b7; }
+    .show .host { font-size:.85rem; color:#d1d1d1; }
 
-    /* Archive colour enforced */
-    .is-archive { --chip: #263238; background: #0f1214; border-color:#455a64; }
+    /* Brighter palette */
+    .tone-1 { --chip:#22D3EE; --bg:#083344; } /* cyan */
+    .tone-2 { --chip:#34D399; --bg:#062f25; } /* green */
+    .tone-3 { --chip:#F59E0B; --bg:#261a03; } /* amber */
+    .tone-4 { --chip:#F97316; --bg:#2a1304; } /* orange */
+    .tone-5 { --chip:#A78BFA; --bg:#1c1630; } /* violet */
+    .tone-6 { --chip:#EC4899; --bg:#2b0f20; } /* pink */
+    .tone-7 { --chip:#4ADE80; --bg:#0f2714; } /* light green */
+    .tone-8 { --chip:#60A5FA; --bg:#0a1a35; } /* light blue */
 
-    @supports not (background: color-mix(in srgb, #000 10%, #fff)) {
-      /* Fallback if color-mix isn't supported */
-      .show { background: #121212; }
-    }
+    /* Archives = BLUE, always */
+    .is-archive { --chip:#3B82F6; --bg:#0b1f3f; }
 
     @media (max-width: 980px) {
       .week-grid { grid-template-columns: 48px 1fr; }
-      .day-col { grid-column: 2 / -1; }
+      .day-col { grid-column: 2; }
       .time-col { grid-column: 1; }
-      /* Stack days vertically on smaller screens */
-      .week-grid { grid-auto-rows: auto; }
     }
   </style>
 
-  <!-- Chromecast init (kept, matches index) -->
+  <!-- Chromecast init (kept) -->
   <script>
     window.__onGCastApiAvailable = isAvailable => {
       if (isAvailable) {
@@ -234,7 +236,19 @@
     <h1>Monthly Schedule</h1>
     <div class="utilities">
       <button class="ccr-btn" id="todayBtn" title="Jump to current week">This Week</button>
-      <div class="legend"><span class="chip" style="background:#5A8785"></span><small>Show</small></div>
+      <div class="legend">
+        <span class="chip" style="background:#22D3EE"></span>
+        <span class="chip" style="background:#34D399"></span>
+        <span class="chip" style="background:#F59E0B"></span>
+        <span class="chip" style="background:#F97316"></span>
+        <span class="chip" style="background:#A78BFA"></span>
+        <span class="chip" style="background:#EC4899"></span>
+        <span class="chip" style="background:#4ADE80"></span>
+        <span class="chip" style="background:#60A5FA"></span>
+        <small style="opacity:.8;">Order of shows each day</small>
+        <span class="chip" style="background:#3B82F6;margin-left:.5rem;"></span>
+        <small style="opacity:.8;">Archives</small>
+      </div>
     </div>
   </header>
 
@@ -266,7 +280,7 @@
   </footer>
 
   <script>
-    // ==== API (match homepage) ====
+    // ==== API (same auth style as homepage) ====
     const API_KEY = "pk_0b8abc6f834b444f949f727e88a728e0";
     const STATION_ID = "cutters-choice-radio";
     const BASE_URL = "https://api.radiocult.fm/api";
@@ -299,23 +313,24 @@
       }
       return weeks;
     };
+    const inRange = (d, a, b) => d >= a && d <= b;
 
-    // format “YYYY-MM-DD” in a chosen tz (or local)
-    const ymdInTz = (d, tz) => {
-      return new Intl.DateTimeFormat('en-CA', { timeZone: tz === 'local' ? undefined : tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
-    };
+    // format YYYY-MM-DD in chosen tz (or local)
+    const ymdInTz = (d, tz) => new Intl.DateTimeFormat('en-CA', {
+      timeZone: tz === 'local' ? undefined : tz, year:'numeric', month:'2-digit', day:'2-digit'
+    }).format(d);
+
     // minutes since start of day in chosen tz
     const minutesInDay = (d, tz) => {
       const parts = new Intl.DateTimeFormat('en-GB', {
-        timeZone: tz === 'local' ? undefined : tz,
-        hour: '2-digit', minute: '2-digit', hour12: false
+        timeZone: tz === 'local' ? undefined : tz, hour:'2-digit', minute:'2-digit', hour12:false
       }).formatToParts(d);
-      let hh = 0, mm = 0;
+      let hh=0, mm=0;
       for (const p of parts) {
-        if (p.type === 'hour') hh = parseInt(p.value, 10);
-        if (p.type === 'minute') mm = parseInt(p.value, 10);
+        if (p.type === 'hour') hh = parseInt(p.value,10);
+        if (p.type === 'minute') mm = parseInt(p.value,10);
       }
-      return hh * 60 + mm;
+      return hh*60 + mm;
     };
 
     // ==== FETCH MONTH ====
@@ -333,27 +348,11 @@
     }
 
     // ==== COLOURS ====
-    // Order-of-day palette (1st show, 2nd show, 3rd show, …), repeats if more than 8 in a day.
-    const ORDER_PALETTE = [
-      '#1E88E5', // blue
-      '#43A047', // green
-      '#FB8C00', // orange
-      '#8E24AA', // purple
-      '#00ACC1', // cyan
-      '#F4511E', // deep orange
-      '#7CB342', // lime green
-      '#5E35B1'  // indigo
-    ];
-    const ARCHIVE_COLOR = '#263238';
-
+    const ORDER_CLASSES = ['tone-1','tone-2','tone-3','tone-4','tone-5','tone-6','tone-7','tone-8'];
     const isArchive = (s) => {
       const blob = `${s.title||''} ${s.host||''}`.toLowerCase();
       return blob.includes('archive') || blob.includes('archives');
     };
-
-    function colourForIndex(index) {
-      return ORDER_PALETTE[(index) % ORDER_PALETTE.length];
-    }
 
     // ==== RENDER ====
     function fmtTime(d, tz) {
@@ -375,6 +374,13 @@
       return col;
     }
 
+    function reorderWeeksWithCurrentFirst(weeks) {
+      const today = new Date();
+      const idx = weeks.findIndex(w => inRange(today, w.start, w.end));
+      if (idx === -1) return weeks;
+      return [weeks[idx], ...weeks.slice(idx+1), ...weeks.slice(0, idx)];
+    }
+
     function renderMonth(date, shows, tz) {
       const mount = document.getElementById("weeksStack");
       mount.innerHTML = "";
@@ -390,7 +396,8 @@
       });
       for (const [, arr] of buckets) arr.sort((a,b)=> new Date(a.start) - new Date(b.start));
 
-      const weeks = splitMonthIntoWeeks(date);
+      let weeks = splitMonthIntoWeeks(date);
+      weeks = reorderWeeksWithCurrentFirst(weeks);  // current week appears first
 
       weeks.forEach(({start}) => {
         const weekEl = document.createElement("section");
@@ -411,28 +418,21 @@
           const body = document.createElement("div");
           body.className = "day-body";
 
-          const key = `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}`;
-          // key must be the tz version:
           const keyTz = ymdInTz(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())), tz);
           const todays = buckets.get(keyTz) || [];
 
-          // Assign colours by order within the day
           todays.forEach((s, idx) => {
             const st = new Date(s.start), en = new Date(s.end);
             const startMin = minutesInDay(st, tz);
-            const endMin = Math.max(startMin + 15, minutesInDay(en, tz)); // minimum 15 min visual
-            const top = (startMin) + 'px'; // we’ll convert below
-            const height = (endMin - startMin) + 'px';
+            let endMin = minutesInDay(en, tz);
+            if (endMin <= startMin) endMin = 24*60; // spans midnight -> cap to end of day
+
+            const startQ = Math.floor(startMin / 15);
+            const spanQ = Math.max(1, Math.ceil((endMin - startMin) / 15));
 
             const show = document.createElement('div');
-            show.className = "show";
-            const isArc = isArchive(s);
-            const color = isArc ? ARCHIVE_COLOR : colourForIndex(idx);
-            show.style.setProperty('--chip', color);
-            // translate minutes -> pixels via CSS var
-            show.style.top = `calc(${startMin} * (var(--hourH) / 60))`;
-            show.style.height = `calc(${Math.max(20, (endMin-startMin))} * (var(--hourH) / 60))`;
-            if (isArc) show.classList.add('is-archive');
+            show.className = "show " + (isArchive(s) ? 'is-archive' : ORDER_CLASSES[idx % ORDER_CLASSES.length]);
+            show.style.gridRow = `${startQ + 1} / span ${spanQ}`;
 
             show.innerHTML = `
               <div class="time">${fmtTime(st, tz)}–${fmtTime(en, tz)}</div>
@@ -470,23 +470,24 @@
     document.getElementById("prevMonthBtn").addEventListener("click", () => {
       current = new Date(Date.UTC(current.getUTCFullYear(), current.getUTCMonth()-1, 1));
       loadMonth();
+      window.scrollTo({ top: 0, behavior: 'instant' });
     });
     document.getElementById("nextMonthBtn").addEventListener("click", () => {
       current = new Date(Date.UTC(current.getUTCFullYear(), current.getUTCMonth()+1, 1));
       loadMonth();
+      window.scrollTo({ top: 0, behavior: 'instant' });
     });
     document.getElementById("todayBtn").addEventListener("click", () => {
       current = new Date();
       loadMonth();
-      const weeks = document.querySelectorAll(".week-grid");
-      if (weeks[0]) weeks[0].scrollIntoView({ behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
     document.getElementById("tzSelect").addEventListener("change", e => { tzMode = e.target.value; loadMonth(); });
 
     // Boot
     loadMonth();
 
-    // Manual cast fallback
+    // Manual cast fallback (optional)
     document.getElementById('manualCastBtn')?.addEventListener('click', () => {
       const context = cast.framework.CastContext.getInstance();
       context.requestSession().catch(err => console.error('Fallback session error', err));
