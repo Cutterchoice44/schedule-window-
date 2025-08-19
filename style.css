@@ -347,17 +347,23 @@ section h2::after {
   border-bottom: 0.4px solid var(--brand-teal);
 }
 
-/* Thin separators for "This Week’s Lineup" */
-#schedule-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0; /* border acts as the divider */
+/* Day title = white on solid teal (matches nav) */
+#schedule-container h3,
+#schedule-container .day-title {
+  background: var(--brand-teal);
+  color: #fff;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  margin: 0.6rem 0 0.2rem;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.5px;
 }
-#schedule-container > * {
-  padding: 0.35rem 0.5rem;
-}
-#schedule-container > * + * {
-  border-top: 2px solid var(--brand-teal); /* set to 1px if you want thinner */
+
+/* Thin teal line between shows (rows that follow a day title) */
+#schedule-container h3 ~ * ,
+#schedule-container .day-title ~ * {
+  border-top: 2px solid var(--brand-teal);
+  padding: 0.35rem 0.6rem;
 }
 
 /* ─── FOOTER BANNER ────────────────────────────────────────────── */
