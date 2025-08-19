@@ -72,7 +72,7 @@
       display:flex; align-items:center; justify-content:space-between;
       padding:.5rem .75rem; border-bottom:2px solid #000; background:var(--brand-teal);
     }
-    /* FORCE bright white for the title */
+    /* bright white for the title */
     .page-header h1{
       font-family:'Bebas Neue',sans-serif; font-size:2.2rem;
       letter-spacing:.5px; color:#fff !important; margin:0;
@@ -89,7 +89,7 @@
       border-bottom:1px solid var(--brand-teal); padding:.75rem .75rem;
       position:sticky; top:0; background:#000; z-index:20;
     }
-    /* FORCE bright white for the date range */
+    /* bright white for the date range */
     .month-controls .title{
       font-family:'Bebas Neue',sans-serif; font-size:2rem;
       color:#fff !important; letter-spacing:.5px;
@@ -109,16 +109,16 @@
       overflow:hidden; background:#0f0f0f; padding:6px;
     }
 
-    /* Time ruler (make labels brighter and 25% larger) */
+    /* Time ruler (bright + 25% larger) */
     .time-col{
       position:relative; height:calc(var(--hourH)*24); border:1px solid #1c1c1c; border-radius:6px;
       background:repeating-linear-gradient(to bottom,#0b0b0b 0,#0b0b0b calc(var(--hourH) - 1px),#1e1e1e calc(var(--hourH) - 1px),#1e1e1e var(--hourH));
     }
     .time-col .hour-label{
       position:absolute; left:6px; transform:translateY(-50%);
-      font-size:.98rem; /* up from .78rem ≈ +25% */
-      color:#fff !important;                /* bright white */
-      text-shadow:0 1px 0 rgba(0,0,0,.35);  /* subtle punch */
+      font-size:.98rem; /* up from .78rem */
+      color:#fff !important;
+      text-shadow:0 1px 0 rgba(0,0,0,.35);
     }
 
     /* Day header + body */
@@ -127,15 +127,14 @@
       background:#0d0d0d; border:1px solid #1e1e1e; padding:.45rem .5rem;
       border-radius:6px; margin-bottom:6px;
     }
-    /* FORCE bright white + 25% larger */
     .day-head .dow{
       font-family:'Bebas Neue',sans-serif;
-      font-size:1.38rem;              /* up from 1.1rem ≈ +25% */
+      font-size:1.38rem;              /* +25% */
       color:#fff !important;
       text-shadow:0 1px 0 rgba(0,0,0,.35);
     }
     .day-head .date{
-      font-size:1.06rem;              /* up from .85rem ≈ +25% */
+      font-size:1.06rem;              /* +25% */
       color:#fff !important;
       opacity:1 !important;
       text-shadow:0 1px 0 rgba(0,0,0,.35);
@@ -224,7 +223,6 @@
   </nav>
 
   <header class="page-header">
-    <!-- stays bright white via CSS above -->
     <h1>MONTHLY SCHEDULE</h1>
     <div class="utilities">
       <button class="ccr-btn" id="todayBtn" title="Jump to current 4-week block">This Week</button>
@@ -249,7 +247,6 @@
       <button class="ccr-btn" id="prevMonthBtn" aria-label="Previous 4 weeks">◀</button>
       <button class="ccr-btn" id="nextMonthBtn" aria-label="Next 4 weeks">▶</button>
     </div>
-    <!-- bright white via CSS -->
     <div class="title" id="monthTitle">Loading…</div>
     <div>
       <label style="display:flex;align-items:center;gap:.35rem;">
@@ -288,6 +285,7 @@
     const addDaysUTC = (d, n) => { const x = new Date(d); x.setUTCDate(x.getUTCDate()+n); return x; };
     const startOfWeekUTC = (date) => { const d=new Date(Date.UTC(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())); const day=(d.getUTCDay()+6)%7; d.setUTCDate(d.getUTCDate()-day); d.setUTCHours(0,0,0,0); return d; };
 
+    // Original (kept for internal UTC label fallbacks)
     function rangeLabel(startUtc, endUtc){
       const f = (d,opts)=> new Intl.DateTimeFormat(undefined,opts).format(d);
       const sMon = f(startUtc,{day:'2-digit',month:'short'});
@@ -300,10 +298,12 @@
       return `${sMon} – ${eMon}`;
     }
 
+    // yyyy-mm-dd in chosen tz
     const ymdInTz = (d, tz) => new Intl.DateTimeFormat('en-CA',{
       timeZone: tz==='local'?undefined:tz, year:'numeric',month:'2-digit',day:'2-digit'
     }).format(d);
 
+    // minutes since day start in tz
     const minutesInDay = (d, tz) => {
       const parts = new Intl.DateTimeFormat('en-GB',{
         timeZone: tz==='local'?undefined:tz, hour:'2-digit', minute:'2-digit', hour12:false
@@ -319,8 +319,39 @@
       return `${String(hh).padStart(2,'0')}:${String(m).padStart(2,'0')} ${ampm}`;
     };
 
+    /* === NEW: timezone-aware labels === */
+    // Day-of-week in the selected timezone (MON/TUE/…)
+    const dowInTz = (d, tz) =>
+      new Intl.DateTimeFormat('en-GB', {
+        timeZone: tz === 'local' ? undefined : tz,
+        weekday: 'short'
+      }).format(d).toUpperCase();
+
+    // "24 Aug" in the selected timezone
+    const fmtDMtz = (d, tz) =>
+      new Intl.DateTimeFormat(undefined, {
+        timeZone: tz === 'local' ? undefined : tz,
+        day: 'numeric',
+        month: 'short'
+      }).format(d);
+
+    // Range label respecting the selected timezone
+    const rangeLabelInTz = (startUtc, endUtc, tz) => {
+      const f = (d,opts)=> new Intl.DateTimeFormat(undefined, {
+        ...(tz==='local'?{}:{timeZone:tz}), ...opts
+      }).format(d);
+      const sameMonthYear =
+        f(startUtc,{month:'numeric',year:'numeric'}) === f(endUtc,{month:'numeric',year:'numeric'});
+      if (sameMonthYear) {
+        const moYr = f(startUtc,{month:'long',year:'numeric'});
+        return `${moYr} • ${f(startUtc,{day:'2-digit',month:'short'})}–${f(endUtc,{day:'2-digit'})}`;
+      }
+      return `${f(startUtc,{day:'2-digit',month:'short'})} – ${f(endUtc,{day:'2-digit',month:'short',year:'numeric'})}`;
+    };
+
     /* ===== Fetch 4-week block ===== */
     async function fetchRange(startUtc, endUtc) {
+      // pad by one day to survive DST & borders
       const paddedStart = addDaysUTC(startUtc, -1).toISOString();
       const paddedEnd   = addDaysUTC(endUtc,   1).toISOString();
       const { schedules = [] } = await rcFetch(`/station/${STATION_ID}/schedule?startDate=${encodeURIComponent(paddedStart)}&endDate=${encodeURIComponent(paddedEnd)}`);
@@ -341,6 +372,7 @@
       return blob.includes('archive') || blob.includes('archives');
     };
 
+    /* ===== Split overnight and fill gaps with Archives ===== */
     const incYMD = (s) => { const [y,m,d]=s.split('-').map(Number); const dt=new Date(Date.UTC(y,m-1,d)); dt.setUTCDate(dt.getUTCDate()+1); return `${dt.getUTCFullYear()}-${pad(dt.getUTCMonth()+1)}-${pad(dt.getUTCDate())}`; };
 
     function splitShowsIntoDailySegments(shows, tz) {
@@ -359,6 +391,7 @@
           key = incYMD(key);
         }
       }
+      // sort and fill gaps with archives to keep column solid
       for (const [key, arr] of map) {
         arr.sort((a,b)=> a.segStartMin - b.segStartMin);
         const filled = [];
@@ -376,6 +409,7 @@
       return map;
     }
 
+    /* ===== Build UK-day order lookup (so show colours reset by UK day) ===== */
     function buildUkOrderLookup(shows){
       const tz = 'Europe/London';
       const byDay = new Map();
@@ -407,12 +441,13 @@
       }
       return col;
     }
-    const fmtDM = (d)=> d.toLocaleString(undefined,{day:'numeric',month:'short'});
 
     function renderFourWeeks(anchorUtc, shows, tz, ukOrderLookup){
       const mount=document.getElementById('weeksStack'); mount.innerHTML='';
       const endUtc = addDaysUTC(anchorUtc, 27);
-      document.getElementById('monthTitle').textContent = rangeLabel(anchorUtc, endUtc);
+
+      // timezone-aware range title
+      document.getElementById('monthTitle').textContent = rangeLabelInTz(anchorUtc, endUtc, tz);
 
       const buckets = splitShowsIntoDailySegments(shows, tz);
 
@@ -422,12 +457,18 @@
 
         for(let i=0;i<7;i++){
           const dayUtc = addDaysUTC(anchorUtc, w*7 + i);
+
           const dayCol=document.createElement('div'); dayCol.className='day-col';
           const head=document.createElement('div'); head.className='day-head';
-          const dow=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][(dayUtc.getUTCDay()+6)%7];
-          head.innerHTML=`<div class="dow">${dow}</div><div class="date">${fmtDM(dayUtc)}</div>`;
+
+          // **NEW** timezone-aware day name & date
+          const dowLabel  = dowInTz(dayUtc, tz);  // MON/TUE/…
+          const dateLabel = fmtDMtz(dayUtc, tz);  // 24 Aug
+          head.innerHTML=`<div class="dow">${dowLabel}</div><div class="date">${dateLabel}</div>`;
+
           const body=document.createElement('div'); body.className='day-body';
 
+          // segments keyed to the same tz so columns line up for all viewers
           const dayKey = ymdInTz(dayUtc, tz);
           const segments = buckets.get(dayKey) || [];
 
@@ -441,7 +482,7 @@
             } else {
               const key = (seg.start||'') + '|' + (seg.title||'');
               const ord = ukOrderLookup.get(key) ?? 0;
-              classes += ['tone-1','tone-2','tone-3','tone-4','tone-5','tone-6','tone-7','tone-8'][ord % 8];
+              classes += ORDER_CLASSES[ord % ORDER_CLASSES.length];
             }
             show.className = classes;
             show.style.gridRow = `${startQ+1} / span ${spanQ}`;
@@ -462,6 +503,7 @@
     }
 
     /* ===== State & controls ===== */
+    // Anchor is Monday (UTC) of the current week; columns are then labelled in the selected tz
     let anchorUtc = startOfWeekUTC(new Date());
     let tzMode = "local";
 
