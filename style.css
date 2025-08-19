@@ -120,26 +120,51 @@ header .title .tagline {
   width: 100% !important;
   padding: 0.25rem 0.75rem !important;
 
-  /* ① Make the nav itself a SOLID TEAL bar: */
+  /* Solid teal bar with black top/bottom lines */
   background-color: var(--brand-teal) !important;
-
-  /* ② Draw a 2px BLACK line above and below that teal bar: */
   border-top:    2px solid #000 !important;
   border-bottom: 2px solid #000 !important;
 
   z-index: 1000 !important;
 }
 
-/* ③ Ensure link text sits on top of the teal background: */
-#main-nav .nav-item {
-  position: relative;
-  z-index: 1;
-}
+/* Legacy items (safe to keep) */
+#main-nav .nav-item { position: relative; z-index: 1; }
 #main-nav .nav-item a {
   color: #fff !important;
   font-size: 2rem !important;
   text-transform: uppercase !important;
   text-decoration: none !important;
+}
+
+/* NEW: Evenly spaced menu links + icons cluster */
+#main-nav .nav-menu{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-evenly !important;
+  gap:clamp(.25rem,2vw,1.5rem) !important;
+  flex:1 1 auto !important;      /* takes all space before icons */
+}
+#main-nav a.nav-link{
+  color:#fff !important;
+  font-family:'Bebas Neue',sans-serif !important;
+  font-size:2rem !important;
+  text-transform:uppercase !important;
+  text-decoration:none !important;
+  white-space:nowrap !important;
+}
+#main-nav .nav-actions{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  gap:.5rem !important;
+}
+#main-nav .social-icon,
+#main-nav .icon-img{
+  margin-left:.25rem !important;
+  vertical-align:middle !important;
+  width:2rem !important;
+  height:auto !important;
 }
 
 /* ─── OneMusic badge in NAV bar ─────────────────────────────────── */
@@ -155,11 +180,8 @@ header .title .tagline {
   display: block;
 }
 @media (max-width: 400px) {
-  #main-nav .nav-onemusic {
-    display: none;
-  }
+  #main-nav .nav-onemusic { display: none; }
 }
-
 
 /* ─── CHROMECAST BUTTON STYLING ────────────────────────────────────────── */
 google-cast-button {
@@ -190,9 +212,7 @@ google-cast-button {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
 }
-#slideshow > * {
-  height: 100%;
-}
+#slideshow > * { height: 100%; }
 
 /* ─── SECTION & TYPOGRAPHY ────────────────────────────────────────── */
 section {
@@ -218,9 +238,7 @@ section h2::after {
   width: 0;
   animation: drawLineReverse 2s ease-out forwards;
 }
-@keyframes drawLineReverse {
-  to { width: 100%; }
-}
+@keyframes drawLineReverse { to { width: 100%; } }
 
 /* ─── CHAT IFRAME & ACTIONS ──────────────────────────────────────── */
 .chat iframe {
@@ -230,9 +248,7 @@ section h2::after {
   border-radius: 4px;
   margin-top: 0.4rem;
 }
-.chat-actions {
-  text-align: center;
-}
+.chat-actions { text-align: center; }
 .popout-btn {
   display: inline-block;
   margin: 0.5rem auto;
@@ -263,10 +279,7 @@ section h2::after {
   margin: 0 auto 1rem;
   display: block;
 }
-.player-container {
-  max-width: 1000px;
-  margin: 0 auto;
-}
+.player-container { max-width: 1000px; margin: 0 auto; }
 #now-archive {
   font-weight: bold;
   color: var(--brand-teal);
@@ -305,14 +318,9 @@ section h2::after {
   margin-bottom: 0.5rem;
   border: none;
 }
-.add-mixcloud {
-  text-align: center;
-  padding-top: 0.5rem;
-}
+.add-mixcloud { text-align: center; padding-top: 0.5rem; }
 .add-mixcloud input,
-.add-mixcloud button {
-  font-size: 1rem;
-}
+.add-mixcloud button { font-size: 1rem; }
 .add-mixcloud input {
   width: 80%;
   max-width: 600px;
@@ -386,28 +394,17 @@ section h2::after {
   text-transform: uppercase;
   padding: 0.5rem 1rem;
 }
-.banner a:hover {
-  color: var(--text-light);
-}
+.banner a:hover { color: var(--text-light); }
 
 /* ─── RESPONSIVE GIF SIZING ─────────────────────────────────────── */
 @media (max-width: 1200px) {
-  :root {
-    --gif-height: 200px;
-    --gif-width: 16%;
-  }
+  :root { --gif-height: 200px; --gif-width: 16%; }
 }
 @media (max-width: 768px) {
-  :root {
-    --gif-height: 150px;
-    --gif-width: 20%;
-  }
+  :root { --gif-height: 150px; --gif-width: 20%; }
 }
 @media (max-width: 480px) {
-  :root {
-    --gif-height: 120px;
-    --gif-width: 30%;
-  }
+  :root { --gif-height: 120px; --gif-width: 30%; }
 }
 
 /* ─── MOBILE LAYOUT OVERWRITES ──────────────────────────────────── */
@@ -422,13 +419,8 @@ section h2::after {
     max-width: 180px;
     margin-bottom: 1.5rem;
   }
-  header .title h1 {
-    font-size: 1.8rem;
-    line-height: 1.2;
-  }
-  header .title .tagline {
-    font-size: 1rem;
-  }
+  header .title h1 { font-size: 1.8rem; line-height: 1.2; }
+  header .title .tagline { font-size: 1rem; }
 
   /* Single-column flow */
   .grid-container {
@@ -438,9 +430,7 @@ section h2::after {
   }
 
   /* Remove Mixcloud entirely on mobile */
-  .mixcloud {
-    display: none !important;
-  }
+  .mixcloud { display: none !important; }
 
   /* Re‐order so that Live → Chat → Schedule */
   .live-player { order: 1; }
@@ -448,21 +438,30 @@ section h2::after {
   .schedule    { order: 3; }
 
   /* Tweak chat iframe */
-  .chat iframe {
-    height: 70vh;
-    max-height: 70vh;
-  }
+  .chat iframe { height: 70vh; max-height: 70vh; }
 
   /* Schedule stays scrollable */
-  .schedule {
-    overflow-y: auto;
+  .schedule { overflow-y: auto; }
+
+  /* NEW: Show ~2 days of lineup, scroll for more */
+  #schedule-container{
+    max-height:55vh;
+    overflow-y:auto;
+    padding-right:6px;
+    scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch;
+  }
+  /* Keep day strip visible while scrolling */
+  #schedule-container h3,
+  #schedule-container .day-title{
+    position:sticky;
+    top:0;
+    z-index:2;
   }
 
   /* Hide any leftover desktop‐only buttons */
   #popOutBtn,
-  header .logo-container:last-of-type {
-    display: none;
-  }
+  header .logo-container:last-of-type { display: none; }
 
   /* Chat-modal remains available */
   #chatModal {
@@ -475,9 +474,7 @@ section h2::after {
     justify-content: center;
     align-items: center;
   }
-  #chatModal .modal-content {
-    width: 100%; height: 100%;
-  }
+  #chatModal .modal-content { width: 100%; height: 100%; }
   #chatModal iframe {
     width: 100%; height: 100%;
     border: none; border-radius: 4px;
@@ -498,13 +495,8 @@ section h2::after {
 
 /* ─── DESKTOP LAYOUT OVERWRITES ──────────────────────────────────── */
 @media (min-width: 600px) {
-  .grid-container {
-    grid-template-columns: 1fr 1.5fr;
-  }
-  .banner {
-    flex-direction: row;
-    justify-content: space-between;
-  }
+  .grid-container { grid-template-columns: 1fr 1.5fr; }
+  .banner { flex-direction: row; justify-content: space-between; }
 }
 @media (min-width: 769px) {
   .live-player iframe,
@@ -520,37 +512,20 @@ section h2::after {
     max-width: none;
     max-height: 100vh;
   }
-  #slideshow > * {
-    height: 100%;
-  }
-  .grid-container {
-    grid-template-columns: 1fr 1.5fr 1fr 1fr;
-  }
-  .chat iframe {
-    height: 1200px;
-  }
+  #slideshow > * { height: 100%; }
+  .grid-container { grid-template-columns: 1fr 1.5fr 1fr 1fr; }
+  .chat iframe { height: 1200px; }
 }
 @media (min-width: 900px) {
-  header .title h1 {
-    font-size: 8rem;
-  }
-  header .title .tagline {
-    font-size: 2.45rem;
-  }
-  header .logo {
-    height: 200px;
-    max-width: 270px;
-  }
-  #now-art {
-    max-width: 600px;
-  }
+  header .title h1 { font-size: 8rem; }
+  header .title .tagline { font-size: 2.45rem; }
+  header .logo { height: 200px; max-width: 270px; }
+  #now-art { max-width: 600px; }
 }
+
 /* ─── DESKTOP ONLY: HIDE THE CHAT-SECTION POP-OUT BUTTON ────────────── */
 @media only screen and (min-width: 769px) {
-  /* this targets the extra pop-out inside the chat section */
-  section.chat .chat-actions {
-    display: none !important;
-  }
+  section.chat .chat-actions { display: none !important; }
 }
 
 /* ─── MIXCLOUD DELETE LINK STYLES ─────────────────────────────────────────── */
@@ -571,12 +546,7 @@ section h2::after {
 
 /* ─── MOBILE ONLY: hide in-chat pop-out, show player pop-out ───────── */
 @media (max-width: 768px) {
-  /* hide the duplicate button under the chat iframe */
-  section.chat .chat-actions {
-    display: none !important;
-  }
-
-  /* show your mobile chat button under the player */
+  section.chat .chat-actions { display: none !important; }
   #chatPopupBtn {
     display: inline-block !important;
     margin: 0.5rem auto 1rem !important;
@@ -585,23 +555,15 @@ section h2::after {
 
 /* ─── DESKTOP ONLY: show in-chat pop-out, hide player pop-out ───────── */
 @media (min-width: 769px) {
-  /* show the built-in chat button under the chat iframe */
-  section.chat .chat-actions {
-    display: block !important;
-  }
-
-  /* hide your extra button under the player */
-  #chatPopupBtn {
-    display: none !important;
-  }
+  section.chat .chat-actions { display: block !important; }
+  #chatPopupBtn { display: none !important; }
 }
-/* ─── MIXCLOUD DELETE LINK STYLES ─────────────────────────────────── */
+
+/* ─── MIXCLOUD DELETE LINK STYLES (admin mode toggle) ─────────────── */
 .mixcloud-item { position: relative; }
 /* hide for everyone by default */
 .remove-link {
   display: none !important;
-  /* (you can drop the rest of the styling if you like,
-     or leave text-decoration/color so it’s ready to go) */
   text-align: right;
   font-size: 0.9rem;
   color: var(--brand-teal);
@@ -609,16 +571,12 @@ section h2::after {
   margin-top: 0.3rem;
   cursor: pointer;
 }
-
 /* only show when in admin mode */
-.admin-mode .remove-link {
-  display: inline-block !important;
-}
+.admin-mode .remove-link { display: inline-block !important; }
 
 /* ─── MOBILE-ONLY LOGO SIZING ──────────────────────────────────── */
 @media only screen and (max-width: 768px) {
   header .logo {
-    /* smaller height for mobile */
     height: 100px !important;
     max-width: 100px !important;
     margin-bottom: 1.5rem !important;
