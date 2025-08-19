@@ -10,187 +10,155 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-  <!-- NAV styling (matches home) + SCHEDULE styles -->
+  <!-- NAV + SCHEDULE STYLES -->
   <style>
     :root{
       --brand-teal:#5A8785;
 
       /* schedule scale */
       --hourH:52px;                 /* height per hour */
-      --qH:calc(var(--hourH)/4);    /* 15-min track */
+      --qH:calc(var(--hourH)/4);    /* 15-min slots */
     }
 
-    /* ───────── NAV BAR (same spacing as home) ───────── */
+    /* NAV – matches home page spacing */
     #main-nav{
-      display:flex !important;
-      align-items:center !important;
-      gap:.5rem !important;
-      width:100% !important;
-      padding:.10rem .65rem !important;
-      margin:0 !important;
-      box-sizing:border-box !important;
-      background-color:var(--brand-teal) !important;
-      position:relative !important;
-      z-index:1000 !important;
-      border-top:2px solid #000;
-      border-bottom:2px solid #000;
+      display:flex!important; align-items:center!important;
+      gap:.5rem!important; width:100%!important;
+      padding:.10rem .65rem!important; margin:0!important;
+      box-sizing:border-box!important;
+      background-color:var(--brand-teal)!important;
+      position:relative!important; z-index:1000!important;
+      border-top:2px solid #000; border-bottom:2px solid #000;
     }
     #main-nav .nav-menu{
-      display:flex !important;
-      align-items:center !important;
-      justify-content:space-evenly !important;
-      gap:clamp(.25rem,2vw,1.5rem) !important;
-      flex:1 1 auto !important;
+      display:flex!important; align-items:center!important;
+      justify-content:space-evenly!important;
+      gap:clamp(.25rem,2vw,1.5rem)!important;
+      flex:1 1 auto!important;
     }
     #main-nav a.nav-link{
-      color:#fff !important;
-      font-family:'Bebas Neue',sans-serif !important;
-      font-size:2rem !important;
-      text-transform:uppercase !important;
-      text-decoration:none !important;
-      white-space:nowrap !important;
+      color:#fff!important; font-family:'Bebas Neue',sans-serif!important;
+      font-size:2rem!important; text-transform:uppercase!important;
+      text-decoration:none!important; white-space:nowrap!important;
     }
     #main-nav .nav-actions{
-      display:flex !important;
-      align-items:center !important;
-      justify-content:flex-end !important;
-      gap:.6rem !important;
+      display:flex!important; align-items:center!important;
+      justify-content:flex-end!important; gap:.6rem!important;
     }
     #main-nav .social-icon{
-      display:inline-flex !important;
-      align-items:center !important;
-      justify-content:center !important;
-      line-height:1 !important;
-      text-decoration:none !important;
-      color:#fff !important;
+      display:inline-flex!important; align-items:center!important; justify-content:center!important;
+      color:#fff!important; text-decoration:none!important;
+      line-height:1!important;
     }
-    #main-nav .social-icon i{ font-size:2.1rem !important; }
-    #main-nav .icon-img{
-      width:2.6rem !important;
-      height:auto !important;
-      margin-left:.25rem !important;
-      vertical-align:middle !important;
-      display:inline-block !important;
-    }
+    #main-nav .social-icon i{ font-size:2.1rem!important; }
+    #main-nav .icon-img{ width:2.6rem!important; height:auto!important; margin-left:.25rem!important; }
     #main-nav .nav-onemusic{ display:flex; align-items:center; }
     #main-nav .nav-onemusic img{ max-height:2rem; width:auto; height:auto; display:block; }
-    #manualCastBtn{
-      background:none;border:none;color:#fff;font-size:1.8rem;cursor:pointer;margin-left:.25rem;
-    }
+    #manualCastBtn{ background:none; border:none; color:#fff; font-size:1.8rem; cursor:pointer; margin-left:.25rem; }
+
     @media (max-width:768px){
-      #main-nav a.nav-link{ font-size:1rem !important; }
-      #main-nav .nav-menu{ justify-content:space-between !important; gap:.5rem !important; }
-      #main-nav .social-icon i{ font-size:1.4rem !important; }
-      #main-nav .icon-img, #main-nav .nav-onemusic{ display:none !important; }
+      #main-nav a.nav-link{ font-size:1rem!important; }
+      #main-nav .nav-menu{ justify-content:space-between!important; gap:.5rem!important; }
+      #main-nav .social-icon i{ font-size:1.4rem!important; }
+      #main-nav .icon-img, #main-nav .nav-onemusic{ display:none!important; }
     }
 
-    /* ───────── PAGE HEADER/CONTROLS ───────── */
+    /* PAGE base */
     html,body{ background:#000; color:#fafafa; }
     *{ box-sizing:border-box; }
 
+    /* Header bar above schedule */
     .page-header{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:.5rem .75rem;border-bottom:2px solid #000;background:var(--brand-teal)
+      display:flex; align-items:center; justify-content:space-between;
+      padding:.5rem .75rem; border-bottom:2px solid #000; background:var(--brand-teal);
     }
-    /* Brighter “Monthly Schedule” */
+    /* FORCE bright white for the title */
     .page-header h1{
-      font-family:'Bebas Neue',sans-serif;
-      font-size:2.2rem;
-      letter-spacing:.5px;
-      color:#ffffff !important;
-      margin:0;
-      text-shadow:0 0 2px rgba(0,0,0,.35);
+      font-family:'Bebas Neue',sans-serif; font-size:2.2rem;
+      letter-spacing:.5px; color:#fff !important; margin:0;
+      text-shadow:0 1px 0 rgba(0,0,0,.35);
     }
+
     .utilities{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
     .legend{display:flex;gap:.5rem;align-items:center}
-    .legend small{color:#ffffff !important}
     .chip{width:.9rem;height:.9rem;border-radius:2px;border:1px solid #1f1f1f;display:inline-block}
 
+    /* Controls row (period title, tz, arrows) */
     .month-controls{
-      display:flex;gap:.5rem;align-items:center;justify-content:space-between;
-      border-bottom:1px solid var(--brand-teal);padding:.75rem .75rem;
-      position:sticky;top:0;background:#000;z-index:20
+      display:flex; gap:.5rem; align-items:center; justify-content:space-between;
+      border-bottom:1px solid var(--brand-teal); padding:.75rem .75rem;
+      position:sticky; top:0; background:#000; z-index:20;
     }
-    /* Month/period title — bright white */
+    /* FORCE bright white for the date range */
     .month-controls .title{
-      font-family:'Bebas Neue',sans-serif;
-      font-size:2rem;
-      color:#ffffff !important;
-      letter-spacing:.5px;
-      text-transform:uppercase;
+      font-family:'Bebas Neue',sans-serif; font-size:2rem;
+      color:#fff !important; letter-spacing:.5px;
+      text-shadow:0 1px 0 rgba(0,0,0,.35);
     }
     .ccr-btn{
-      background:var(--brand-teal);color:#fff;border:none;border-radius:6px;
-      padding:.5rem .75rem;cursor:pointer;font-weight:600;letter-spacing:.3px
+      background:var(--brand-teal); color:#fff; border:none; border-radius:6px;
+      padding:.5rem .75rem; cursor:pointer; font-weight:600; letter-spacing:.3px;
     }
-    /* “Times in …” brighter */
-    .month-controls label span{ color:#ffffff !important; }
 
-    .weeks-stack{display:flex;flex-direction:column;gap:1.25rem;padding:1rem .75rem 2rem}
+    .weeks-stack{ display:flex; flex-direction:column; gap:1.25rem; padding:1rem .75rem 2rem; }
 
-    /* ───────── GRID (time + 7 days) ───────── */
+    /* 8 columns: time ruler + 7 days */
     .week-grid{
-      display:grid;grid-template-columns:64px repeat(7,1fr);gap:6px;
-      border:2px solid var(--brand-teal);border-radius:8px;overflow:hidden;background:#0f0f0f;padding:6px
+      display:grid; grid-template-columns:64px repeat(7,1fr); gap:6px;
+      border:2px solid var(--brand-teal); border-radius:8px;
+      overflow:hidden; background:#0f0f0f; padding:6px;
     }
 
-    /* Time ruler — BRIGHTER + 25% larger */
+    /* Time ruler (make labels brighter and 25% larger) */
     .time-col{
-      position:relative;height:calc(var(--hourH)*24);border:1px solid #1c1c1c;border-radius:6px;
-      background:repeating-linear-gradient(to bottom,#0b0b0b 0,#0b0b0b calc(var(--hourH) - 1px),#1e1e1e calc(var(--hourH) - 1px),#1e1e1e var(--hourH))
+      position:relative; height:calc(var(--hourH)*24); border:1px solid #1c1c1c; border-radius:6px;
+      background:repeating-linear-gradient(to bottom,#0b0b0b 0,#0b0b0b calc(var(--hourH) - 1px),#1e1e1e calc(var(--hourH) - 1px),#1e1e1e var(--hourH));
     }
     .time-col .hour-label{
-      position:absolute;left:6px;
-      font-size:calc(.78rem * 1.25);
-      color:#ffffff !important;
-      text-shadow:0 0 2px rgba(0,0,0,.35);
-      transform:translateY(-50%);
+      position:absolute; left:6px; transform:translateY(-50%);
+      font-size:.98rem; /* up from .78rem ≈ +25% */
+      color:#fff !important;                /* bright white */
+      text-shadow:0 1px 0 rgba(0,0,0,.35);  /* subtle punch */
     }
 
-    /* Day column */
-    .day-col{display:flex;flex-direction:column}
-
-    /* Day header — darker panel, **bright white** text, 25% larger */
+    /* Day header + body */
+    .day-col{ display:flex; flex-direction:column; }
     .day-head{
-      background:#0a0a0a;
-      border:1px solid #1e1e1e;
-      padding:.50rem .6rem;
-      border-radius:6px;
-      margin-bottom:6px
+      background:#0d0d0d; border:1px solid #1e1e1e; padding:.45rem .5rem;
+      border-radius:6px; margin-bottom:6px;
     }
-    .dow{
+    /* FORCE bright white + 25% larger */
+    .day-head .dow{
       font-family:'Bebas Neue',sans-serif;
-      font-size:calc(1.1rem * 1.25);            /* +25% */
-      color:#ffffff !important;
-      letter-spacing:.4px;
-      text-shadow:0 0 2px rgba(0,0,0,.35);
+      font-size:1.38rem;              /* up from 1.1rem ≈ +25% */
+      color:#fff !important;
+      text-shadow:0 1px 0 rgba(0,0,0,.35);
     }
-    .date{
-      font-size:calc(.85rem * 1.25);            /* +25% */
-      color:#ffffff !important;
+    .day-head .date{
+      font-size:1.06rem;              /* up from .85rem ≈ +25% */
+      color:#fff !important;
       opacity:1 !important;
-      text-shadow:0 0 2px rgba(0,0,0,.35);
+      text-shadow:0 1px 0 rgba(0,0,0,.35);
     }
 
-    /* Day body grid */
     .day-body{
-      display:grid;grid-template-rows:repeat(96,var(--qH));position:relative;
-      height:calc(var(--hourH)*24);border:1px solid #1c1c1c;border-radius:6px;overflow:hidden;
-      background:repeating-linear-gradient(to bottom,#0b0b0b 0,#0b0b0b calc(var(--hourH) - 1px),#1a1a1a calc(var(--hourH) - 1px),#1a1a1a var(--hourH))
+      display:grid; grid-template-rows:repeat(96,var(--qH)); position:relative;
+      height:calc(var(--hourH)*24); border:1px solid #1c1c1c; border-radius:6px; overflow:hidden;
+      background:repeating-linear-gradient(to bottom,#0b0b0b 0,#0b0b0b calc(var(--hourH) - 1px),#1a1a1a calc(var(--hourH) - 1px),#1a1a1a var(--hourH));
     }
 
-    /* Show block (unchanged) */
+    /* Show block — full bright color */
     .show{
-      grid-column:1/-1;margin:2px 4px;
+      grid-column:1/-1; margin:2px 4px;
       background:var(--chip,#FBBF24); color:var(--fg,#1b0f00);
       border-radius:10px; padding:.48rem .6rem; overflow:hidden;
       box-shadow: inset 0 0 0 2px rgba(0,0,0,.2);
     }
-    .show .time{font-size:.78rem;opacity:.95}
-    .show .title{font-weight:800;line-height:1.2}
-    .show .host{font-size:.85rem;opacity:.92}
+    .show .time{ font-size:.78rem; opacity:.95; }
+    .show .title{ font-weight:800; line-height:1.2; }
+    .show .host{ font-size:.85rem; opacity:.92; }
 
-    /* Palette */
+    /* Palette (warm first so 1st show pops) */
     .tone-1{--chip:#FBBF24;--fg:#1b0f00}
     .tone-2{--chip:#FB923C;--fg:#1a0900}
     .tone-3{--chip:#EC4899;--fg:#220713}
@@ -204,9 +172,9 @@
     .is-archive{--chip:#93C5FD;--fg:#0b1f3f}
 
     @media (max-width:980px){
-      .week-grid{grid-template-columns:48px 1fr}
-      .day-col{grid-column:2}
-      .time-col{grid-column:1}
+      .week-grid{ grid-template-columns:48px 1fr; }
+      .day-col{ grid-column:2; }
+      .time-col{ grid-column:1; }
     }
   </style>
 
@@ -241,28 +209,23 @@
       <a href="https://instagram.com/cutterschoiceradio" target="_blank" class="social-icon" aria-label="Instagram">
         <i class="fab fa-instagram"></i>
       </a>
-
       <img src="/images/alexa-logo.webp" alt="Alexa" class="icon-img" loading="lazy">
-
       <a href="https://tunein.com/radio/Cutters-Choice-Radio-s344746/" target="_blank" aria-label="TuneIn">
         <img src="/images/tunein-logo.png" alt="TuneIn" class="icon-img" loading="lazy">
       </a>
-
       <div class="nav-onemusic">
         <a href="https://onemusicnz.com" target="_blank" rel="noopener">
           <img src="/images/ONEMUSICLOGO.png" alt="We’re licensed to play OneMusic NZ" loading="lazy">
         </a>
       </div>
-
       <google-cast-button></google-cast-button>
-      <button id="manualCastBtn" title="Cast this stream">
-        <i class="fab fa-chromecast"></i>
-      </button>
+      <button id="manualCastBtn" title="Cast this stream"><i class="fab fa-chromecast"></i></button>
     </div>
   </nav>
 
   <header class="page-header">
-    <h1>Monthly Schedule</h1>
+    <!-- stays bright white via CSS above -->
+    <h1>MONTHLY SCHEDULE</h1>
     <div class="utilities">
       <button class="ccr-btn" id="todayBtn" title="Jump to current 4-week block">This Week</button>
       <div class="legend">
@@ -274,9 +237,9 @@
         <span class="chip" style="background:#60A5FA"></span>
         <span class="chip" style="background:#10B981"></span>
         <span class="chip" style="background:#4ADE80"></span>
-        <small>Order of shows each UK day</small>
+        <small style="opacity:.95;color:#fff">Order of shows each UK day</small>
         <span class="chip" style="background:#93C5FD;margin-left:.5rem;"></span>
-        <small>Archives</small>
+        <small style="opacity:.95;color:#fff">Archives</small>
       </div>
     </div>
   </header>
@@ -286,11 +249,12 @@
       <button class="ccr-btn" id="prevMonthBtn" aria-label="Previous 4 weeks">◀</button>
       <button class="ccr-btn" id="nextMonthBtn" aria-label="Next 4 weeks">▶</button>
     </div>
+    <!-- bright white via CSS -->
     <div class="title" id="monthTitle">Loading…</div>
     <div>
       <label style="display:flex;align-items:center;gap:.35rem;">
-        <span>Times in</span>
-        <select id="tzSelect" class="ccr-btn" style="background:#0a0a0a;border:1px solid #1c1c1c;color:#fff;">
+        <span style="font-size:.95rem;color:#fff">Times in</span>
+        <select id="tzSelect" class="ccr-btn" style="background:#0a0a0a;border:1px solid #1c1c1c;color:#fff">
           <option value="local">Your local time</option>
           <option value="Europe/London">UK (Europe/London)</option>
           <option value="UTC">UTC</option>
@@ -300,7 +264,7 @@
   </section>
 
   <main class="weeks-stack" id="weeksStack" aria-live="polite">
-    <p style="opacity:.7;">Fetching…</p>
+    <p style="opacity:.8;color:#fff">Fetching…</p>
   </main>
 
   <footer class="banner">
@@ -341,7 +305,9 @@
     }).format(d);
 
     const minutesInDay = (d, tz) => {
-      const parts = new Intl.DateTimeFormat('en-GB',{ timeZone: tz==='local'?undefined:tz, hour:'2-digit', minute:'2-digit', hour12:false }).formatToParts(d);
+      const parts = new Intl.DateTimeFormat('en-GB',{
+        timeZone: tz==='local'?undefined:tz, hour:'2-digit', minute:'2-digit', hour12:false
+      }).formatToParts(d);
       let hh=0,mm=0; for(const p of parts){ if(p.type==='hour') hh=parseInt(p.value,10); if(p.type==='minute') mm=parseInt(p.value,10); }
       return hh*60+mm;
     };
@@ -508,7 +474,7 @@
         renderFourWeeks(blockStart, shows, tzMode, ukOrderLookup);
       }catch(e){
         console.error(e);
-        document.getElementById('weeksStack').innerHTML="<p>Couldn’t load schedule.</p>";
+        document.getElementById('weeksStack').innerHTML="<p style='color:#fff'>Couldn’t load schedule.</p>";
       }
     }
 
