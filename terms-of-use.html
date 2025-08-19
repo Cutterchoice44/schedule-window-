@@ -1,26 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Terms of Use – Cutters Choice Radio Alexa Skill</title>
-  <link rel="stylesheet" href="/css/style.css"><!-- adjust path -->
-</head>
-<body>
-  <?php include 'header.php'; ?>  <!-- or your nav include -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cutters Choice Radio — Schedule</title>
+  <!-- Re‑use site styles & brand tokens -->
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root { --brand-teal: #5A8785; }
 
-  <main class="container">
-    <h1>Terms of Use for Cutters Choice Radio Alexa Skill</h1>
-    <p>This Alexa skill (“Skill”) is provided by Cutters Choice Radio (“we,” “us,” “our”) and is offered “as‑is” without warranties of any kind. By enabling and using this Skill, you agree to the following terms:</p>
-    <ul>
-      <li><strong>Usage:</strong> You may play our live radio stream via Alexa. No registration or fee is required.</li>
-      <li><strong>Availability:</strong> We may modify or discontinue the Skill at any time without notice.</li>
-      <li><strong>Liability:</strong> We are not responsible for any interruptions, errors, or damages arising from your use of this Skill.</li>
-      <li><strong>Intellectual Property:</strong> All audio content is owned or licensed by Cutters Choice Radio and its partners.</li>
-      <li><strong>Support:</strong> For questions, contact us at <a href="mailto:castingnz@yahoo.co.nz">castingnz@yahoo.co.nz</a>.</li>
-    </ul>
+    /* Page container */
+    .schedule-page {
+      min-height: 100vh;
+      background: #000;
+      color: #fafafa;
+    }
+
+    /* Page header (small, to keep things light on this page) */
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .5rem .75rem; border-bottom: 2px solid #000; background: var(--brand-teal);
+    }
+    .page-header h1 {
+      font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: .5px; color: #fff; margin: 0;
+    }
+
+    /* Month controls */
+    .month-controls {
+      display: flex; gap: .5rem; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--brand-teal); padding: .75rem .75rem; position: sticky; top: 0; background: #000; z-index: 20;
+    }
+    .month-controls .title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--brand-teal); }
+    .month-controls .controls { display: flex; gap: .5rem; }
+    .ccr-btn {
+      background: var(--brand-teal); color: #fff; border: none; border-radius: 6px; padding: .5rem .75rem; cursor: pointer;
+      font-weight: 600; letter-spacing: .3px;
+    }
+
+    /* Weekly stack wrapper */
+    .weeks-stack { display: flex; flex-direction: column; gap: 1rem; padding: 1rem .75rem 2rem; }
+
+    /* One week grid (7 columns) */
+    .week-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; border: 2px solid var(--brand-teal); border-radius: 8px; overflow: hidden; background: #111;
+    }
+
+    /* Day column */
+    .day-col { min-height: 360px; display: flex; flex-direction: column; }
+    .day-head { position: sticky; top: calc(48px + 1px); background: #0d0d0d; border-bottom: 1px solid #1e1e1e; padding: .45rem .5rem; z-index: 10; }
+    .dow { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--brand-teal); }
+    .date { font-size: .85rem; color: #bdbdbd; }
+
+    /* Shows list inside each day */
+    .shows { padding: .5rem; display: flex; flex-direction: column; gap: .4rem; overflow-y: auto; }
+
+    /* Show card */
+    .show {
+      border-left: 5px solid var(--chip-color, #5A8785);
+      background: #0a0a0a; border: 1px solid #1c1c1c; border-radius: 6px; padding: .45rem .55rem; display: grid; gap: .15rem;
+    }
+    .show .time { font-size: .85rem; color: #cccccc; }
+    .show .title { font-weight: 700; color: #fff; line-height: 1.2; }
+    .show .host { font-size: .9rem; color: #b7b7b7; }
+
+    /* Legend + utilities */
+    .utilities { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+    .legend { display: flex; gap: .5rem; align-items: center; }
+    .chip { display:inline-block; width:.75rem; height:.75rem; border-radius: 2px; border: 1px solid #1f1f1f; }
+
+    /* Narrow screens */
+    @media (max-width: 980px) {
+      .week-grid { grid-template-columns: repeat(2, 1fr); }
+      .day-head { position: static; }
+    }
+    @media (max-width: 580px) {
+      .week-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="schedule-page">
+  <!-- TOP NAV — mirrors the site and gives a direct route back -->
+  <nav id="main-nav" style="background: var(--brand-teal);">
+    <div class="nav-item nav-left"><a class="nav-link" href="index.html">HOME</a></div>
+    <div class="nav-item nav-center"><a class="nav-link" href="index-ourDJS.html">OUR DJS</a></div>
+    <div class="nav-item nav-right">
+      <a class="nav-link" href="our-story.html">OUR STORY</a>
+      <a class="nav-link" href="merch.html">MERCH</a>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <h1>Monthly Schedule</h1>
+    <div class="utilities">
+      <button class="ccr-btn" id="todayBtn" title="Jump to current week">This Week</button>
+      <div class="legend" title="Colours are auto‑assigned by show title">
+        <span class="chip" style="background:#5A8785"></span><small>Show</small>
+      </div>
+    </div>
+  </header>
+
+  <section class="month-controls">
+    <div class="controls">
+      <button class="ccr-btn" id="prevMonthBtn" aria-label="Previous month">◀</button>
+      <button class="ccr-btn" id="nextMonthBtn" aria-label="Next month">▶</button>
+    </div>
+    <div class="title" id="monthTitle">Loading…</div>
+    <div class="controls">
+      <label style="display:flex; align-items:center; gap:.35rem;">
+        <span style="font-size:.9rem;color:#bdbdbd;">Times in</span>
+        <select id="tzSelect" class="ccr-btn" style="background:#0a0a0a;border:1px solid #1c1c1c;color:#fff;">
+          <option value="local">Your local time</option>
+          <option value="Europe/London">UK (Europe/London)</option>
+          <option value="UTC">UTC</option>
+        </select>
+      </label>
+    </div>
+  </section>
+
+  <main class="weeks-stack" id="weeksStack" aria-live="polite">
+    <p style="opacity:.7;">Fetching month…</p>
   </main>
 
-  <?php include 'footer.php'; ?>
+  <footer class="banner">
+    <a href="privacy-policy.html">PRIVACY POLICY</a>
+    <a href="index.html">Back to Home</a>
+  </footer>
+
+  <script>
+    // ====== CONFIG ======
+    const API_KEY = 'pk_0b8abc6f834b444f949f727e88a728e0';
+    const STATION_SLUG = 'cutters-choice-radio'; // change if your Radiocult slug differs
+
+    // ====== DATE HELPERS ======
+    const fmtMonth = (d) => new Intl.DateTimeFormat(undefined, { month:'long', year:'numeric' }).format(d);
+    const pad = (n) => String(n).padStart(2, '0');
+    const startOfWeek = (date) => {
+      const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+      // make Monday the first day
+      const day = (d.getUTCDay() + 6) % 7; // 0 = Monday
+      d.setUTCDate(d.getUTCDate() - day);
+      return d;
+    };
+    const endOfWeek = (date) => { const d = new Date(date); d.setUTCDate(d.getUTCDate()+6); return d; };
+    const startOfMonth = (date) => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
+    const endOfMonth = (date) => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth()+1, 0, 23, 59, 59));
+
+    // Split a month into an array of weeks [{start, end}]
+    const splitMonthIntoWeeks = (anyDayInMonth) => {
+      const startM = startOfMonth(anyDayInMonth);
+      const endM = endOfMonth(anyDayInMonth);
+      let wStart = startOfWeek(startM);
+      const weeks = [];
+      while (wStart <= endM) {
+        const wEnd = endOfWeek(wStart);
+        weeks.push({ start: new Date(wStart), end: new Date(wEnd) });
+        wStart.setUTCDate(wStart.getUTCDate() + 7);
+      }
+      return weeks;
+    };
+
+    // ====== API ======
+    async function fetchScheduleRange(startISO, endISO) {
+      // Try a couple of public endpoints Radiocult commonly exposes.
+      const endpoints = [
+        // (1) Public schedule (by slug)
+        `https://app.radiocult.fm/api/v1/public/stations/${STATION_SLUG}/schedule?start=${encodeURIComponent(startISO)}&end=${encodeURIComponent(endISO)}&key=${API_KEY}`,
+        // (2) Legacy path fallbacks
+        `https://app.radiocult.fm/public-api/schedule?slug=${STATION_SLUG}&start=${encodeURIComponent(startISO)}&end=${encodeURIComponent(endISO)}&key=${API_KEY}`
+      ];
+      let lastErr;
+      for (const url of endpoints) {
+        try {
+          const res = await fetch(url, { mode: 'cors' });
+          if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
+          const data = await res.json();
+          return normalizeShows(data);
+        } catch (e) {
+          lastErr = e;
+        }
+      }
+      console.error('Schedule fetch failed:', lastErr);
+      return [];
+    }
+
+    // Bring unknown API shapes to a common array of {start, end, title, host, art}
+    function normalizeShows(data) {
+      if (!data) return [];
+      // Common shapes: { shows: [...] } or direct array
+      const arr = Array.isArray(data) ? data : (Array.isArray(data.shows) ? data.shows : []);
+      return arr.map(s => ({
+        start: s.start || s.startAt || s.startsAt || s.starts || s.from || s.timeStart,
+        end:   s.end   || s.endAt   || s.endsAt   || s.ends   || s.to   || s.timeEnd,
+        title: s.title || s.name || s.showTitle || 'Untitled show',
+        host:  s.host  || s.dj || s.presenter || s.artist || s.user || s.owner || '',
+        art:   s.art   || s.artwork || s.image || s.cover || s.picture || ''
+      })).filter(s => s.start && s.end);
+    }
+
+    // Group shows into a Map keyed by yyyy-mm-dd (UTC day bucket)
+    function bucketByDay(shows, tz) {
+      const map = new Map();
+      const toKey = (d) => `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}`;
+      for (const s of shows) {
+        const st = new Date(s.start);
+        const key = toKey(new Date(Date.UTC(st.getUTCFullYear(), st.getUTCMonth(), st.getUTCDate())));
+        if (!map.has(key)) map.set(key, []);
+        map.get(key).push(s);
+      }
+      // sort by start
+      for (const [, arr] of map) arr.sort((a,b)=> new Date(a.start) - new Date(b.start));
+      return map;
+    }
+
+    // Deterministic pastel chip color from title
+    function colorFromTitle(t) {
+      let h = 0; for (let i=0;i<t.length;i++) h = (h*31 + t.charCodeAt(i)) >>> 0;
+      const hue = h % 360; return `hsl(${hue} 45% 38%)`;
+    }
+
+    function fmtTime(d, tz) {
+      if (tz === 'local') return new Intl.DateTimeFormat(undefined, { hour:'2-digit', minute:'2-digit' }).format(d);
+      return new Intl.DateTimeFormat(undefined, { hour:'2-digit', minute:'2-digit', timeZone: tz }).format(d);
+    }
+
+    // ====== RENDER ======
+    function renderMonth(date, shows, tz) {
+      const mount = document.getElementById('weeksStack');
+      mount.innerHTML = '';
+      document.getElementById('monthTitle').textContent = fmtMonth(date);
+
+      const weeks = splitMonthIntoWeeks(date);
+      const dayBuckets = bucketByDay(shows, tz);
+
+      // Helper to create a day column
+      const makeDay = (dUTC) => {
+        const col = document.createElement('div'); col.className = 'day-col';
+        const head = document.createElement('div'); head.className = 'day-head';
+        const dow = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][(dUTC.getUTCDay()+6)%7];
+        head.innerHTML = `<div class="dow">${dow}</div><div class="date">${dUTC.getUTCDate()} ${dUTC.toLocaleString(undefined,{month:'short'})}</div>`;
+        const list = document.createElement('div'); list.className = 'shows';
+
+        const key = `${dUTC.getUTCFullYear()}-${pad(dUTC.getUTCMonth()+1)}-${pad(dUTC.getUTCDate())}`;
+        const showsToday = dayBuckets.get(key) || [];
+        if (showsToday.length === 0) {
+          const empty = document.createElement('div'); empty.style.opacity = .5; empty.style.fontSize = '.9rem'; empty.textContent = 'No scheduled shows';
+          list.appendChild(empty);
+        } else {
+          for (const s of showsToday) {
+            const st = new Date(s.start); const en = new Date(s.end);
+            const card = document.createElement('div'); card.className = 'show';
+            card.style.setProperty('--chip-color', colorFromTitle(s.title));
+            card.innerHTML = `
+              <div class="time">${fmtTime(st, tz)}–${fmtTime(en, tz)}</div>
+              <div class="title">${escapeHtml(s.title)}</div>
+              ${s.host ? `<div class="host">${escapeHtml(String(s.host))}</div>` : ''}
+            `;
+            list.appendChild(card);
+          }
+        }
+        col.append(head, list);
+        return col;
+      };
+
+      // Build week by week
+      weeks.forEach(({start, end}) => {
+        const weekEl = document.createElement('section'); weekEl.className = 'week-grid';
+        const d = new Date(start);
+        for (let i=0;i<7;i++) { weekEl.appendChild(makeDay(new Date(d))); d.setUTCDate(d.getUTCDate()+1); }
+        mount.appendChild(weekEl);
+      });
+    }
+
+    // ====== STATE / CONTROLS ======
+    let current = new Date(); // today
+    let tzMode = 'local';
+
+    async function loadMonth() {
+      const monthStart = startOfMonth(current);
+      const monthEnd = endOfMonth(current);
+      // Widen to the outer week edges so week blocks look complete
+      const rangeStart = startOfWeek(monthStart);
+      const rangeEnd = endOfWeek(monthEnd);
+      const shows = await fetchScheduleRange(rangeStart.toISOString(), rangeEnd.toISOString());
+      renderMonth(current, shows, tzMode);
+    }
+
+    document.getElementById('prevMonthBtn').addEventListener('click', () => {
+      current = new Date(Date.UTC(current.getUTCFullYear(), current.getUTCMonth()-1, 1));
+      loadMonth();
+    });
+    document.getElementById('nextMonthBtn').addEventListener('click', () => {
+      current = new Date(Date.UTC(current.getUTCFullYear(), current.getUTCMonth()+1, 1));
+      loadMonth();
+    });
+    document.getElementById('todayBtn').addEventListener('click', () => {
+      current = new Date(); loadMonth();
+      // Scroll to the first week element (rough jump to "this week")
+      const weeks = document.querySelectorAll('.week-grid');
+      if (weeks[0]) weeks[0].scrollIntoView({ behavior: 'smooth' });
+    });
+    document.getElementById('tzSelect').addEventListener('change', (e) => {
+      tzMode = e.target.value; loadMonth();
+    });
+
+    // util
+    function escapeHtml (str) { return String(str).replace(/[&<>"]+/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s])); }
+
+    // boot
+    loadMonth();
+  </script>
 </body>
 </html>
