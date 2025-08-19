@@ -143,7 +143,7 @@
   <header class="page-header">
     <h1>Monthly Schedule</h1>
     <div class="utilities">
-      <button class="ccr-btn" id="todayBtn" title="Jump to current week">This Week</button>
+      <button class="ccr-btn" id="todayBtn" title="Jump to current 4-week block">This Week</button>
       <div class="legend">
         <span class="chip" style="background:#FBBF24"></span>
         <span class="chip" style="background:#FB923C"></span>
@@ -162,8 +162,8 @@
 
   <section class="month-controls">
     <div>
-      <button class="ccr-btn" id="prevMonthBtn" aria-label="Previous month">◀</button>
-      <button class="ccr-btn" id="nextMonthBtn" aria-label="Next month">▶</button>
+      <button class="ccr-btn" id="prevMonthBtn" aria-label="Previous 4 weeks">◀</button>
+      <button class="ccr-btn" id="nextMonthBtn" aria-label="Next 4 weeks">▶</button>
     </div>
     <div class="title" id="monthTitle">Loading…</div>
     <div>
@@ -179,7 +179,7 @@
   </section>
 
   <main class="weeks-stack" id="weeksStack" aria-live="polite">
-    <p style="opacity:.7;">Fetching month…</p>
+    <p style="opacity:.7;">Fetching…</p>
   </main>
 
   <footer class="banner">
@@ -200,13 +200,22 @@
 
     /* ===== Date helpers ===== */
     const pad = n => String(n).padStart(2,"0");
-    const fmtMonth = d => new Intl.DateTimeFormat(undefined,{month:"long",year:"numeric"}).format(d);
-    const startOfWeek = (date) => { const d=new Date(Date.UTC(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())); const day=(d.getUTCDay()+6)%7; d.setUTCDate(d.getUTCDate()-day); return d; };
-    const endOfWeek = (date) => { const d=new Date(date); d.setUTCDate(d.getUTCDate()+6); d.setUTCHours(23,59,59,999); return d; };
-    const startOfMonth = (date) => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
-    const endOfMonth   = (date) => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth()+1, 0, 23,59,59,999));
-    const inRange = (d,a,b)=> d>=a && d<=b;
-    const splitMonthIntoWeeks = (anyDay) => { const weeks=[]; let w=startOfWeek(startOfMonth(anyDay)); const last=endOfWeek(endOfMonth(anyDay)); while(w<=last){weeks.push({start:new Date(w),end:endOfWeek(w)}); w.setUTCDate(w.getUTCDate()+7);} return weeks; };
+    const addDaysUTC = (d, n) => { const x = new Date(d); x.setUTCDate(x.getUTCDate()+n); return x; };
+    const startOfWeekUTC = (date) => { const d=new Date(Date.UTC(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())); const day=(d.getUTCDay()+6)%7; d.setUTCDate(d.getUTCDate()-day); d.setUTCHours(0,0,0,0); return d; };
+
+    // Format a range like "18 Aug – 14 Sep 2025"
+    function rangeLabel(startUtc, endUtc){
+      const f = (d,opts)=> new Intl.DateTimeFormat(undefined,opts).format(d);
+      const sMon = f(startUtc,{day:'2-digit',month:'short'});
+      const eMon = f(endUtc,{day:'2-digit',month:'short',year:'numeric'});
+      const sameMon = startUtc.getUTCMonth()===endUtc.getUTCMonth() && startUtc.getUTCFullYear()===endUtc.getUTCFullYear();
+      if (sameMon) {
+        const moYr = f(startUtc,{month:'long',year:'numeric'});
+        return `${moYr} • ${sMon}–${f(endUtc,{day:'2-digit'})}`;
+      }
+      const sWithMon = `${sMon}`;
+      return `${sWithMon} – ${eMon}`;
+    }
 
     // yyyy-mm-dd in chosen tz
     const ymdInTz = (d, tz) => new Intl.DateTimeFormat('en-CA',{
@@ -220,9 +229,19 @@
       return hh*60+mm;
     };
 
-    /* ===== Fetch schedule ===== */
-    async function fetchMonthRange(rangeStartISO, rangeEndISO) {
-      const { schedules = [] } = await rcFetch(`/station/${STATION_ID}/schedule?startDate=${encodeURIComponent(rangeStartISO)}&endDate=${encodeURIComponent(rangeEndISO)}`);
+    const fmtHM = (min) => {
+      let h = Math.floor(min/60), m = min % 60;
+      const ampm = h >= 12 ? 'pm':'am';
+      let hh = ((h + 11) % 12) + 1;
+      return `${String(hh).padStart(2,'0')}:${String(m).padStart(2,'0')} ${ampm}`;
+    };
+
+    /* ===== Fetch 4-week block ===== */
+    async function fetchRange(startUtc, endUtc) {
+      // pad by 1 day on either side to be safe across DST edges
+      const paddedStart = addDaysUTC(startUtc, -1).toISOString();
+      const paddedEnd   = addDaysUTC(endUtc,   1).toISOString();
+      const { schedules = [] } = await rcFetch(`/station/${STATION_ID}/schedule?startDate=${encodeURIComponent(paddedStart)}&endDate=${encodeURIComponent(paddedEnd)}`);
       return schedules.map(s => ({
         start: s.startDateUtc || s.startDate || s.startAt || s.start,
         end:   s.endDateUtc   || s.endDate   || s.endAt   || s.end,
@@ -266,20 +285,12 @@
         let cur = 0;
         for (const seg of arr) {
           if (seg.segStartMin > cur) {
-            filled.push({
-              title: "Choice Cuts Archives",
-              host: "",
-              archive: true,
-              segStartMin: cur,
-              segEndMin: seg.segStartMin
-            });
+            filled.push({ title:"Choice Cuts Archives", host:"", archive:true, segStartMin:cur, segEndMin:seg.segStartMin });
           }
           filled.push(seg);
           cur = Math.max(cur, seg.segEndMin);
         }
-        if (cur < 24*60) {
-          filled.push({ title: "Choice Cuts Archives", host: "", archive: true, segStartMin: cur, segEndMin: 24*60 });
-        }
+        if (cur < 24*60) filled.push({ title:"Choice Cuts Archives", host:"", archive:true, segStartMin:cur, segEndMin:24*60 });
         map.set(key, filled);
       }
       return map;
@@ -289,7 +300,6 @@
     function buildUkOrderLookup(shows){
       const tz = 'Europe/London';
       const byDay = new Map();
-      // Use ONLY non-archive scheduled shows
       for(const s of shows){
         if (isArchive(s)) continue;
         const st = new Date(s.start);
@@ -297,9 +307,7 @@
         if(!byDay.has(key)) byDay.set(key, []);
         byDay.get(key).push(s);
       }
-      for(const [,arr] of byDay){
-        arr.sort((a,b)=> new Date(a.start) - new Date(b.start));
-      }
+      for(const [,arr] of byDay){ arr.sort((a,b)=> new Date(a.start) - new Date(b.start)); }
       const lookup = new Map();
       for(const [,arr] of byDay){
         arr.forEach((s, idx)=>{
@@ -310,48 +318,35 @@
       return lookup;
     }
 
-    /* ===== Render ===== */
-    const fmtHM = (min) => {
-      let h = Math.floor(min/60), m = min % 60;
-      const ampm = h >= 12 ? 'pm':'am';
-      let hh = ((h + 11) % 12) + 1;
-      return `${String(hh).padStart(2,'0')}:${String(m).padStart(2,'0')} ${ampm}`;
-    };
-
+    /* ===== Render a 4-week block ===== */
     function buildTimeRuler(){
       const col=document.createElement('div'); col.className='time-col';
       for(let h=0;h<24;h++){ const lab=document.createElement('div'); lab.className='hour-label'; lab.style.top=`calc(${h} * var(--hourH))`; lab.textContent=String(h).padStart(2,'0')+':00'; col.appendChild(lab); }
       return col;
     }
+    const fmtDM = (d)=> d.toLocaleString(undefined,{day:'numeric',month:'short'});
 
-    const reorderWeeksWithCurrentFirst = (weeks) => {
-      const today = new Date();
-      const i = weeks.findIndex(w => inRange(today, w.start, w.end));
-      return i===-1 ? weeks : [weeks[i], ...weeks.slice(i+1), ...weeks.slice(0,i)];
-    };
-
-    function renderMonth(date, shows, tz, ukOrderLookup){
+    function renderFourWeeks(anchorUtc, shows, tz, ukOrderLookup){
       const mount=document.getElementById('weeksStack'); mount.innerHTML='';
-      document.getElementById('monthTitle').textContent = fmtMonth(date);
+      const endUtc = addDaysUTC(anchorUtc, 27); // inclusive end
+      document.getElementById('monthTitle').textContent = rangeLabel(anchorUtc, endUtc);
 
       const buckets = splitShowsIntoDailySegments(shows, tz);
 
-      let weeks = splitMonthIntoWeeks(date);
-      weeks = reorderWeeksWithCurrentFirst(weeks);
-
-      weeks.forEach(({start})=>{
+      // 4 consecutive weeks starting from anchorUtc (Monday UTC)
+      for (let w=0; w<4; w++){
         const weekEl=document.createElement('section'); weekEl.className='week-grid';
         weekEl.appendChild(buildTimeRuler());
 
-        const d=new Date(start);
         for(let i=0;i<7;i++){
+          const dayUtc = addDaysUTC(anchorUtc, w*7 + i);
           const dayCol=document.createElement('div'); dayCol.className='day-col';
           const head=document.createElement('div'); head.className='day-head';
-          const dow=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][(d.getUTCDay()+6)%7];
-          head.innerHTML=`<div class="dow">${dow}</div><div class="date">${d.getUTCDate()} ${d.toLocaleString(undefined,{month:'short'})}</div>`;
+          const dow=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][(dayUtc.getUTCDay()+6)%7];
+          head.innerHTML=`<div class="dow">${dow}</div><div class="date">${fmtDM(dayUtc)}</div>`;
           const body=document.createElement('div'); body.className='day-body';
 
-          const dayKey = ymdInTz(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())), tz);
+          const dayKey = ymdInTz(dayUtc, tz);
           const segments = buckets.get(dayKey) || [];
 
           segments.forEach(seg=>{
@@ -359,21 +354,15 @@
             const spanQ  = Math.max(1, Math.ceil((seg.segEndMin - seg.segStartMin)/15));
             const show=document.createElement('div');
             let classes = 'show ';
-            if (seg.archive && !seg.start) {
-              // filler archive segment
-              classes += 'is-archive';
-            } else if (seg.archive) {
+            if (seg.archive) {
               classes += 'is-archive';
             } else {
-              // non-archive scheduled show: colour by UK-day order
               const key = (seg.start||'') + '|' + (seg.title||'');
               const ord = ukOrderLookup.get(key) ?? 0;
               classes += ORDER_CLASSES[ord % ORDER_CLASSES.length];
             }
             show.className = classes;
             show.style.gridRow = `${startQ+1} / span ${spanQ}`;
-
-            // times from the segment minutes for accurate display in selected tz's day-grid
             show.innerHTML = `
               <div class="time">${fmtHM(seg.segStartMin)}–${fmtHM(seg.segEndMin)}</div>
               <div class="title">${String(seg.title).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
@@ -384,36 +373,36 @@
 
           dayCol.append(head, body);
           weekEl.appendChild(dayCol);
-          d.setUTCDate(d.getUTCDate()+1);
         }
 
         mount.appendChild(weekEl);
-      });
+      }
     }
 
-    /* ===== State & controls ===== */
-    let current = new Date();
+    /* ===== State & controls (4-week blocks) ===== */
+    // anchorUtc = Monday (UTC) of the UK-current week — Monday stays Monday in UTC, so this is safe
+    let anchorUtc = startOfWeekUTC(new Date());
     let tzMode = "local";
 
-    async function loadMonth(){
-      const from=startOfWeek(startOfMonth(current)).toISOString();
-      const to=endOfWeek(endOfMonth(current)).toISOString();
+    async function loadBlock(){
+      const blockStart = anchorUtc;
+      const blockEnd   = addDaysUTC(anchorUtc, 28); // exclusive upper bound for fetch
       try{
-        const shows=await fetchMonthRange(from,to);
-        const ukOrderLookup = buildUkOrderLookup(shows);         // NEW: UK-based colour order
-        renderMonth(current,shows,tzMode,ukOrderLookup);
+        const shows=await fetchRange(blockStart, blockEnd);
+        const ukOrderLookup = buildUkOrderLookup(shows);
+        renderFourWeeks(blockStart, shows, tzMode, ukOrderLookup);
       }catch(e){
         console.error(e);
         document.getElementById('weeksStack').innerHTML="<p>Couldn’t load schedule.</p>";
       }
     }
 
-    document.getElementById('prevMonthBtn').addEventListener('click',()=>{ current=new Date(Date.UTC(current.getUTCFullYear(),current.getUTCMonth()-1,1)); loadMonth(); window.scrollTo({top:0}); });
-    document.getElementById('nextMonthBtn').addEventListener('click',()=>{ current=new Date(Date.UTC(current.getUTCFullYear(),current.getUTCMonth()+1,1)); loadMonth(); window.scrollTo({top:0}); });
-    document.getElementById('todayBtn').addEventListener('click',()=>{ current=new Date(); loadMonth(); window.scrollTo({top:0,behavior:'smooth'}); });
-    document.getElementById('tzSelect').addEventListener('change',e=>{ tzMode=e.target.value; loadMonth(); });
+    document.getElementById('prevMonthBtn').addEventListener('click',()=>{ anchorUtc = addDaysUTC(anchorUtc, -28); loadBlock(); window.scrollTo({top:0}); });
+    document.getElementById('nextMonthBtn').addEventListener('click',()=>{ anchorUtc = addDaysUTC(anchorUtc, +28); loadBlock(); window.scrollTo({top:0}); });
+    document.getElementById('todayBtn').addEventListener('click',()=>{ anchorUtc = startOfWeekUTC(new Date()); loadBlock(); window.scrollTo({top:0,behavior:'smooth'}); });
+    document.getElementById('tzSelect').addEventListener('change',e=>{ tzMode=e.target.value; loadBlock(); });
 
-    loadMonth();
+    loadBlock();
 
     // manual cast fallback
     document.getElementById('manualCastBtn')?.addEventListener('click',()=>{
