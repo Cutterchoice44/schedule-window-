@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-  <!-- NAV styling copied from index.html -->
+  <!-- NAV styling (matches main site) -->
   <style>
     :root {
       --brand-teal: #5A8785;
@@ -79,7 +79,7 @@
     .show .host{font-size:.85rem;opacity:.92}
 
     /* Palette (warm tones first so 1st show pops) */
-    .tone-1{--chip:#FBBF24;--fg:#1b0f00} /* gold */
+    .tone-1{--chip:#FBBF24;--fg:#1b0f00} /* yellow/gold */
     .tone-2{--chip:#FB923C;--fg:#1a0900} /* orange */
     .tone-3{--chip:#EC4899;--fg:#220713} /* pink  */
     .tone-4{--chip:#A78BFA;--fg:#0e0a1a} /* violet */
@@ -123,7 +123,6 @@
       <a href="index-ourDJS.html" class="nav-link">OUR DJS</a>
     </div>
     <div class="nav-item nav-right">
-      <!-- Removed SCHEDULE (redundant on this page) -->
       <a href="merch.html" class="nav-link">MERCH</a>
 
       <a href="https://facebook.com/cutterschoiceradio" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
@@ -146,7 +145,6 @@
     <div class="utilities">
       <button class="ccr-btn" id="todayBtn" title="Jump to current week">This Week</button>
       <div class="legend">
-        <!-- Warm-first chips -->
         <span class="chip" style="background:#FBBF24"></span>
         <span class="chip" style="background:#FB923C"></span>
         <span class="chip" style="background:#EC4899"></span>
@@ -155,7 +153,7 @@
         <span class="chip" style="background:#60A5FA"></span>
         <span class="chip" style="background:#10B981"></span>
         <span class="chip" style="background:#4ADE80"></span>
-        <small style="opacity:.85;">Order of shows each day</small>
+        <small style="opacity:.85;">Order of shows each UK day</small>
         <span class="chip" style="background:#93C5FD;margin-left:.5rem;"></span>
         <small style="opacity:.85;">Archives</small>
       </div>
@@ -190,11 +188,11 @@
   </footer>
 
   <script>
-    /* ===== API (same style as homepage) ===== */
-    const API_KEY   = "pk_0b8abc6f834b444f949f727e88a728e0";
-    const STATION_ID= "cutters-choice-radio";
-    const BASE_URL  = "https://api.radiocult.fm/api";
-    const rcFetch   = async (path) => {
+    /* ===== API ===== */
+    const API_KEY    = "pk_0b8abc6f834b444f949f727e88a728e0";
+    const STATION_ID = "cutters-choice-radio";
+    const BASE_URL   = "https://api.radiocult.fm/api";
+    const rcFetch    = async (path) => {
       const res = await fetch(BASE_URL + path, { headers: { "x-api-key": API_KEY } });
       if (!res.ok) throw new Error(`Fetch error ${res.status}`);
       return res.json();
@@ -287,6 +285,31 @@
       return map;
     }
 
+    /* ===== Build UK-day order lookup (so colour order is UK-based) ===== */
+    function buildUkOrderLookup(shows){
+      const tz = 'Europe/London';
+      const byDay = new Map();
+      // Use ONLY non-archive scheduled shows
+      for(const s of shows){
+        if (isArchive(s)) continue;
+        const st = new Date(s.start);
+        const key = ymdInTz(st, tz);
+        if(!byDay.has(key)) byDay.set(key, []);
+        byDay.get(key).push(s);
+      }
+      for(const [,arr] of byDay){
+        arr.sort((a,b)=> new Date(a.start) - new Date(b.start));
+      }
+      const lookup = new Map();
+      for(const [,arr] of byDay){
+        arr.forEach((s, idx)=>{
+          const key = (s.start||'') + '|' + (s.title||'');
+          lookup.set(key, idx); // 0-based: first show of UK day -> 0 (yellow)
+        });
+      }
+      return lookup;
+    }
+
     /* ===== Render ===== */
     const fmtHM = (min) => {
       let h = Math.floor(min/60), m = min % 60;
@@ -307,7 +330,7 @@
       return i===-1 ? weeks : [weeks[i], ...weeks.slice(i+1), ...weeks.slice(0,i)];
     };
 
-    function renderMonth(date, shows, tz){
+    function renderMonth(date, shows, tz, ukOrderLookup){
       const mount=document.getElementById('weeksStack'); mount.innerHTML='';
       document.getElementById('monthTitle').textContent = fmtMonth(date);
 
@@ -331,23 +354,31 @@
           const dayKey = ymdInTz(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())), tz);
           const segments = buckets.get(dayKey) || [];
 
-          // colour order index advances only on non-archives
-          let orderIndex = 0;
-
           segments.forEach(seg=>{
             const startQ = Math.floor(seg.segStartMin/15);
             const spanQ  = Math.max(1, Math.ceil((seg.segEndMin - seg.segStartMin)/15));
             const show=document.createElement('div');
-            show.className='show ' + (seg.archive ? 'is-archive' : ORDER_CLASSES[(orderIndex++) % ORDER_CLASSES.length]);
+            let classes = 'show ';
+            if (seg.archive && !seg.start) {
+              // filler archive segment
+              classes += 'is-archive';
+            } else if (seg.archive) {
+              classes += 'is-archive';
+            } else {
+              // non-archive scheduled show: colour by UK-day order
+              const key = (seg.start||'') + '|' + (seg.title||'');
+              const ord = ukOrderLookup.get(key) ?? 0;
+              classes += ORDER_CLASSES[ord % ORDER_CLASSES.length];
+            }
+            show.className = classes;
             show.style.gridRow = `${startQ+1} / span ${spanQ}`;
 
-            // times from the segment minutes (correct for split/overnight & fillers)
+            // times from the segment minutes for accurate display in selected tz's day-grid
             show.innerHTML = `
               <div class="time">${fmtHM(seg.segStartMin)}–${fmtHM(seg.segEndMin)}</div>
               <div class="title">${String(seg.title).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
               ${seg.host ? `<div class="host">${String(seg.host).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>` : ""}
             `;
-            if (seg.archive) { orderIndex--; } // archives don't consume colour slots
             body.appendChild(show);
           });
 
@@ -369,7 +400,8 @@
       const to=endOfWeek(endOfMonth(current)).toISOString();
       try{
         const shows=await fetchMonthRange(from,to);
-        renderMonth(current,shows,tzMode);
+        const ukOrderLookup = buildUkOrderLookup(shows);         // NEW: UK-based colour order
+        renderMonth(current,shows,tzMode,ukOrderLookup);
       }catch(e){
         console.error(e);
         document.getElementById('weeksStack').innerHTML="<p>Couldn’t load schedule.</p>";
