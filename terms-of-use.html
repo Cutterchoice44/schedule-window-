@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-  <!-- NAV styling (matches main site spacing & sizes) + schedule styles -->
+  <!-- NAV styling (matches home) + SCHEDULE styles -->
   <style>
     :root{
       --brand-teal:#5A8785;
@@ -20,7 +20,7 @@
       --qH:calc(var(--hourH)/4);    /* 15-min track */
     }
 
-    /* NAV BAR — same structure as home page */
+    /* ───────── NAV BAR (same spacing as home) ───────── */
     #main-nav{
       display:flex !important;
       align-items:center !important;
@@ -35,7 +35,6 @@
       border-top:2px solid #000;
       border-bottom:2px solid #000;
     }
-    /* Evenly spaced links take the left/center space */
     #main-nav .nav-menu{
       display:flex !important;
       align-items:center !important;
@@ -51,14 +50,12 @@
       text-decoration:none !important;
       white-space:nowrap !important;
     }
-    /* Icon cluster on the right */
     #main-nav .nav-actions{
       display:flex !important;
       align-items:center !important;
       justify-content:flex-end !important;
       gap:.6rem !important;
     }
-    /* Social glyph sizes (desktop) */
     #main-nav .social-icon{
       display:inline-flex !important;
       align-items:center !important;
@@ -68,7 +65,6 @@
       color:#fff !important;
     }
     #main-nav .social-icon i{ font-size:2.1rem !important; }
-    /* Alexa/TuneIn images (desktop) */
     #main-nav .icon-img{
       width:2.6rem !important;
       height:auto !important;
@@ -78,12 +74,9 @@
     }
     #main-nav .nav-onemusic{ display:flex; align-items:center; }
     #main-nav .nav-onemusic img{ max-height:2rem; width:auto; height:auto; display:block; }
-
     #manualCastBtn{
       background:none;border:none;color:#fff;font-size:1.8rem;cursor:pointer;margin-left:.25rem;
     }
-
-    /* MOBILE nav tweaks (same as home) */
     @media (max-width:768px){
       #main-nav a.nav-link{ font-size:1rem !important; }
       #main-nav .nav-menu{ justify-content:space-between !important; gap:.5rem !important; }
@@ -91,7 +84,7 @@
       #main-nav .icon-img, #main-nav .nav-onemusic{ display:none !important; }
     }
 
-    /* PAGE base */
+    /* ───────── PAGE HEADER/CONTROLS ───────── */
     html,body{ background:#000; color:#fafafa; }
     *{ box-sizing:border-box; }
 
@@ -99,13 +92,18 @@
       display:flex;align-items:center;justify-content:space-between;
       padding:.5rem .75rem;border-bottom:2px solid #000;background:var(--brand-teal)
     }
-    /* Brighter white title */
+    /* Brighter “Monthly Schedule” */
     .page-header h1{
-      font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.5px;color:#ffffff;margin:0;
-      text-shadow:0 0 8px rgba(255,255,255,.15);
+      font-family:'Bebas Neue',sans-serif;
+      font-size:2.2rem;
+      letter-spacing:.5px;
+      color:#ffffff !important;
+      margin:0;
+      text-shadow:0 0 2px rgba(0,0,0,.35);
     }
     .utilities{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
     .legend{display:flex;gap:.5rem;align-items:center}
+    .legend small{color:#ffffff !important}
     .chip{width:.9rem;height:.9rem;border-radius:2px;border:1px solid #1f1f1f;display:inline-block}
 
     .month-controls{
@@ -113,65 +111,75 @@
       border-bottom:1px solid var(--brand-teal);padding:.75rem .75rem;
       position:sticky;top:0;background:#000;z-index:20
     }
-    /* Date-range title in WHITE */
+    /* Month/period title — bright white */
     .month-controls .title{
       font-family:'Bebas Neue',sans-serif;
       font-size:2rem;
-      color:#ffffff;
+      color:#ffffff !important;
       letter-spacing:.5px;
+      text-transform:uppercase;
     }
     .ccr-btn{
       background:var(--brand-teal);color:#fff;border:none;border-radius:6px;
       padding:.5rem .75rem;cursor:pointer;font-weight:600;letter-spacing:.3px
     }
+    /* “Times in …” brighter */
+    .month-controls label span{ color:#ffffff !important; }
 
     .weeks-stack{display:flex;flex-direction:column;gap:1.25rem;padding:1rem .75rem 2rem}
 
-    /* 8 columns: time ruler + 7 days */
+    /* ───────── GRID (time + 7 days) ───────── */
     .week-grid{
       display:grid;grid-template-columns:64px repeat(7,1fr);gap:6px;
       border:2px solid var(--brand-teal);border-radius:8px;overflow:hidden;background:#0f0f0f;padding:6px
     }
 
-    /* Time ruler */
+    /* Time ruler — BRIGHTER + 25% larger */
     .time-col{
       position:relative;height:calc(var(--hourH)*24);border:1px solid #1c1c1c;border-radius:6px;
       background:repeating-linear-gradient(to bottom,#0b0b0b 0,#0b0b0b calc(var(--hourH) - 1px),#1e1e1e calc(var(--hourH) - 1px),#1e1e1e var(--hourH))
     }
-    /* Brighter + 25% larger hour labels */
     .time-col .hour-label{
       position:absolute;left:6px;
       font-size:calc(.78rem * 1.25);
-      color:#e9f7ff;
-      font-weight:700;
+      color:#ffffff !important;
+      text-shadow:0 0 2px rgba(0,0,0,.35);
       transform:translateY(-50%);
-      text-shadow:0 0 6px rgba(233,247,255,.15);
     }
 
-    /* Day header + body */
+    /* Day column */
     .day-col{display:flex;flex-direction:column}
-    .day-head{background:#0d0d0d;border:1px solid #1e1e1e;padding:.45rem .5rem;border-radius:6px;margin-bottom:6px}
-    /* Brighter + 25% larger DOW and date */
+
+    /* Day header — darker panel, **bright white** text, 25% larger */
+    .day-head{
+      background:#0a0a0a;
+      border:1px solid #1e1e1e;
+      padding:.50rem .6rem;
+      border-radius:6px;
+      margin-bottom:6px
+    }
     .dow{
       font-family:'Bebas Neue',sans-serif;
-      font-size:calc(1.1rem * 1.25);
-      color:#ffffff;
-      letter-spacing:.5px;
-      text-shadow:0 0 6px rgba(255,255,255,.1);
+      font-size:calc(1.1rem * 1.25);            /* +25% */
+      color:#ffffff !important;
+      letter-spacing:.4px;
+      text-shadow:0 0 2px rgba(0,0,0,.35);
     }
     .date{
-      font-size:calc(.85rem * 1.25);
-      color:#e9f7ff;
-      font-weight:600;
+      font-size:calc(.85rem * 1.25);            /* +25% */
+      color:#ffffff !important;
+      opacity:1 !important;
+      text-shadow:0 0 2px rgba(0,0,0,.35);
     }
 
+    /* Day body grid */
     .day-body{
       display:grid;grid-template-rows:repeat(96,var(--qH));position:relative;
       height:calc(var(--hourH)*24);border:1px solid #1c1c1c;border-radius:6px;overflow:hidden;
       background:repeating-linear-gradient(to bottom,#0b0b0b 0,#0b0b0b calc(var(--hourH) - 1px),#1a1a1a calc(var(--hourH) - 1px),#1a1a1a var(--hourH))
     }
 
-    /* Show block — full bright color */
+    /* Show block (unchanged) */
     .show{
       grid-column:1/-1;margin:2px 4px;
       background:var(--chip,#FBBF24); color:var(--fg,#1b0f00);
@@ -182,15 +190,15 @@
     .show .title{font-weight:800;line-height:1.2}
     .show .host{font-size:.85rem;opacity:.92}
 
-    /* Palette (warm first so 1st show pops) */
-    .tone-1{--chip:#FBBF24;--fg:#1b0f00} /* yellow */
-    .tone-2{--chip:#FB923C;--fg:#1a0900} /* orange */
-    .tone-3{--chip:#EC4899;--fg:#220713} /* pink */
-    .tone-4{--chip:#A78BFA;--fg:#0e0a1a} /* violet */
-    .tone-5{--chip:#06B6D4;--fg:#001318} /* cyan */
-    .tone-6{--chip:#60A5FA;--fg:#0a1a35} /* light blue */
-    .tone-7{--chip:#10B981;--fg:#00150e} /* green */
-    .tone-8{--chip:#4ADE80;--fg:#041307} /* light green */
+    /* Palette */
+    .tone-1{--chip:#FBBF24;--fg:#1b0f00}
+    .tone-2{--chip:#FB923C;--fg:#1a0900}
+    .tone-3{--chip:#EC4899;--fg:#220713}
+    .tone-4{--chip:#A78BFA;--fg:#0e0a1a}
+    .tone-5{--chip:#06B6D4;--fg:#001318}
+    .tone-6{--chip:#60A5FA;--fg:#0a1a35}
+    .tone-7{--chip:#10B981;--fg:#00150e}
+    .tone-8{--chip:#4ADE80;--fg:#041307}
 
     /* Archives = lighter blue */
     .is-archive{--chip:#93C5FD;--fg:#0b1f3f}
@@ -217,7 +225,7 @@
 </head>
 
 <body>
-  <!-- NAV (same structure as home) -->
+  <!-- NAV -->
   <nav id="main-nav">
     <div class="nav-menu">
       <a href="index.html"        class="nav-link">HOME</a>
@@ -266,9 +274,9 @@
         <span class="chip" style="background:#60A5FA"></span>
         <span class="chip" style="background:#10B981"></span>
         <span class="chip" style="background:#4ADE80"></span>
-        <small style="opacity:.85;">Order of shows each UK day</small>
+        <small>Order of shows each UK day</small>
         <span class="chip" style="background:#93C5FD;margin-left:.5rem;"></span>
-        <small style="opacity:.85;">Archives</small>
+        <small>Archives</small>
       </div>
     </div>
   </header>
@@ -281,7 +289,7 @@
     <div class="title" id="monthTitle">Loading…</div>
     <div>
       <label style="display:flex;align-items:center;gap:.35rem;">
-        <span style="font-size:.9rem;color:#bdbdbd;">Times in</span>
+        <span>Times in</span>
         <select id="tzSelect" class="ccr-btn" style="background:#0a0a0a;border:1px solid #1c1c1c;color:#fff;">
           <option value="local">Your local time</option>
           <option value="Europe/London">UK (Europe/London)</option>
