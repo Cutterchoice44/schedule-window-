@@ -99,8 +99,10 @@
       display:flex;align-items:center;justify-content:space-between;
       padding:.5rem .75rem;border-bottom:2px solid #000;background:var(--brand-teal)
     }
+    /* Brighter white title */
     .page-header h1{
-      font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.5px;color:#fff;margin:0
+      font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.5px;color:#ffffff;margin:0;
+      text-shadow:0 0 8px rgba(255,255,255,.15);
     }
     .utilities{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
     .legend{display:flex;gap:.5rem;align-items:center}
@@ -111,7 +113,13 @@
       border-bottom:1px solid var(--brand-teal);padding:.75rem .75rem;
       position:sticky;top:0;background:#000;z-index:20
     }
-    .month-controls .title{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--brand-teal)}
+    /* Date-range title in WHITE */
+    .month-controls .title{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:2rem;
+      color:#ffffff;
+      letter-spacing:.5px;
+    }
     .ccr-btn{
       background:var(--brand-teal);color:#fff;border:none;border-radius:6px;
       padding:.5rem .75rem;cursor:pointer;font-weight:600;letter-spacing:.3px
@@ -130,13 +138,32 @@
       position:relative;height:calc(var(--hourH)*24);border:1px solid #1c1c1c;border-radius:6px;
       background:repeating-linear-gradient(to bottom,#0b0b0b 0,#0b0b0b calc(var(--hourH) - 1px),#1e1e1e calc(var(--hourH) - 1px),#1e1e1e var(--hourH))
     }
-    .time-col .hour-label{position:absolute;left:6px;font-size:.78rem;color:#a7a7a7;transform:translateY(-50%)}
+    /* Brighter + 25% larger hour labels */
+    .time-col .hour-label{
+      position:absolute;left:6px;
+      font-size:calc(.78rem * 1.25);
+      color:#e9f7ff;
+      font-weight:700;
+      transform:translateY(-50%);
+      text-shadow:0 0 6px rgba(233,247,255,.15);
+    }
 
     /* Day header + body */
     .day-col{display:flex;flex-direction:column}
     .day-head{background:#0d0d0d;border:1px solid #1e1e1e;padding:.45rem .5rem;border-radius:6px;margin-bottom:6px}
-    .dow{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--brand-teal)}
-    .date{font-size:.85rem;color:#bdbdbd}
+    /* Brighter + 25% larger DOW and date */
+    .dow{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:calc(1.1rem * 1.25);
+      color:#ffffff;
+      letter-spacing:.5px;
+      text-shadow:0 0 6px rgba(255,255,255,.1);
+    }
+    .date{
+      font-size:calc(.85rem * 1.25);
+      color:#e9f7ff;
+      font-weight:600;
+    }
 
     .day-body{
       display:grid;grid-template-rows:repeat(96,var(--qH));position:relative;
