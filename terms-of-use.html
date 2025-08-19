@@ -39,6 +39,7 @@
       border-top:2px solid #000;
       border-bottom:2px solid #000;
     }
+
     /* Evenly spaced links occupy all space before the icon cluster */
     #main-nav .nav-menu{
       display:flex !important;
@@ -55,20 +56,45 @@
       text-decoration:none !important;
       white-space:nowrap !important;
     }
+
     /* Icons cluster on the right */
     #main-nav .nav-actions{
       display:flex !important;
       align-items:center !important;
       justify-content:flex-end !important;
-      gap:.5rem !important;
+      gap:.6rem !important;
     }
-    #main-nav .social-icon,
+
+    /* SOCIAL ICONS (Font Awesome) — bigger */
+    #main-nav .social-icon{
+      display:inline-flex !important;
+      align-items:center !important;
+      justify-content:center !important;
+      line-height:1 !important;
+      text-decoration:none !important;
+      color:#fff !important;
+    }
+    #main-nav .social-icon i{
+      font-size:2.1rem !important; /* ↑ size fix */
+    }
+
+    /* IMAGE ICONS (Alexa / TuneIn) — bigger */
     #main-nav .icon-img{
+      width:2.6rem !important;     /* ↑ size fix */
+      height:auto !important;
       margin-left:.25rem !important;
       vertical-align:middle !important;
-      width:2rem !important;
-      height:auto !important;
+      display:inline-block !important;
     }
+
+    /* OneMusic badge */
+    #main-nav .nav-onemusic{
+      display:flex; align-items:center;
+    }
+    #main-nav .nav-onemusic img{
+      max-height:2rem; width:auto; height:auto; display:block;
+    }
+
     /* Cast fallback button */
     #manualCastBtn{
       background:none;border:none;color:#fff;font-size:1.8rem;cursor:pointer;margin-left:.25rem;
@@ -78,6 +104,11 @@
     @media (max-width:768px){
       #main-nav a.nav-link{ font-size:1rem !important; }
       #main-nav .nav-menu{ justify-content:space-between !important; gap:.5rem !important; }
+
+      /* shrink social glyphs slightly on mobile */
+      #main-nav .social-icon i{ font-size:1.4rem !important; }
+
+      /* hide bulky images on mobile to prevent overflow */
       #main-nav .icon-img, #main-nav .nav-onemusic{ display:none !important; }
 
       /* Show ~2 days of the lineup, scroll for more */
