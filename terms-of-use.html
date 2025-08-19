@@ -12,7 +12,7 @@
 
   <!-- INLINE NAV STYLING (exact copy from index.html) -->
   <style>
-    :root { --brand-teal: #5A8785; }
+    :root { --brand-teal: #5A8785; --hourH: 48px; } /* --hourH controls hour height */
 
     /* NAVIGATION BAR */
     #main-nav {
@@ -52,29 +52,13 @@
       height: auto !important;
     }
     #manualCastBtn {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 1.8rem;
-      cursor: pointer;
-      margin-left: 0.5rem;
+      background: none; border: none; color: #fff; font-size: 1.8rem; cursor: pointer; margin-left: 0.5rem;
     }
     @media (max-width: 768px) {
-      #main-nav {
-        flex-wrap: nowrap !important;
-        padding: 0.115rem 0.5rem !important;
-      }
-      #main-nav .nav-item {
-        text-align: center !important;
-        flex: 1 !important;
-      }
-      #main-nav a.nav-link {
-        font-size: 1rem !important;
-        margin: 0 0.25rem !important;
-      }
-      #main-nav .social-icon,
-      #main-nav .icon-img,
-      #main-nav .nav-onemusic { display: none !important; }
+      #main-nav { flex-wrap: nowrap !important; padding: 0.115rem 0.5rem !important; }
+      #main-nav .nav-item { text-align: center !important; flex: 1 !important; }
+      #main-nav a.nav-link { font-size: 1rem !important; margin: 0 0.25rem !important; }
+      #main-nav .social-icon, #main-nav .icon-img, #main-nav .nav-onemusic { display: none !important; }
     }
 
     /* PAGE-SPECIFIC STYLES */
@@ -100,20 +84,98 @@
       font-weight:600; letter-spacing:.3px;
     }
 
-    .weeks-stack { display:flex; flex-direction:column; gap:1rem; padding:1rem .75rem 2rem; }
-    .week-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; border:2px solid var(--brand-teal); border-radius:8px; overflow:hidden; background:#111; }
-    .day-col { min-height:360px; display:flex; flex-direction:column; }
-    .day-head { background:#0d0d0d; border-bottom:1px solid #1e1e1e; padding:.45rem .5rem; z-index:10; }
-    .dow { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; color:var(--brand-teal); }
-    .date { font-size:.85rem; color:#bdbdbd; }
-    .shows { padding:.5rem; display:flex; flex-direction:column; gap:.4rem; overflow-y:auto; }
-    .show { border-left:5px solid var(--chip-color,#5A8785); background:#0a0a0a; border:1px solid #1c1c1c; border-radius:6px; padding:.45rem .55rem; display:grid; gap:.15rem; }
-    .show .time { font-size:.85rem; color:#cccccc; }
-    .show .title { font-weight:700; color:#fff; line-height:1.2; }
-    .show .host { font-size:.9rem; color:#b7b7b7; }
+    .weeks-stack { display:flex; flex-direction:column; gap:1.25rem; padding:1rem .75rem 2rem; }
 
-    @media (max-width: 980px) { .week-grid { grid-template-columns:repeat(2,1fr);} }
-    @media (max-width: 580px) { .week-grid { grid-template-columns:1fr;} }
+    /* 8 columns: time ruler + 7 days */
+    .week-grid {
+      display:grid;
+      grid-template-columns: 64px repeat(7, 1fr);
+      gap: 6px;
+      border:2px solid var(--brand-teal);
+      border-radius:8px;
+      overflow:hidden;
+      background:#111;
+      padding: 6px;
+    }
+
+    /* Time ruler */
+    .time-col {
+      position: relative;
+      height: calc(var(--hourH) * 24);
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          #121212 0px,
+          #121212 1px,
+          transparent 1px,
+          transparent var(--hourH)
+        );
+    }
+    .time-col .hour-label {
+      position: absolute; left: 6px; font-size:.75rem; color:#a7a7a7;
+      transform: translateY(-50%);
+    }
+
+    /* Day column */
+    .day-col { display:flex; flex-direction:column; }
+    .day-head { background:#0d0d0d; border:1px solid #1e1e1e; padding:.45rem .5rem; border-radius:6px; margin-bottom:6px; }
+    .dow { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; color:var(--brand-teal); }
+    .date { font-size:.85rem; color:#bdbdbd; }
+
+    .day-body {
+      position: relative;
+      height: calc(var(--hourH) * 24);
+      border:1px solid #1c1c1c; border-radius:6px; overflow:hidden;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          #0b0b0b 0px,
+          #0b0b0b 1px,
+          #0b0b0b 0,
+          #0b0b0b var(--hourH)
+        );
+    }
+    .day-body::after {
+      /* faint quarter-hour ticks (optional; comment out if you want only hourly) */
+      content: ""; position:absolute; inset:0;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent calc(var(--hourH) - 1px),
+          #151515 calc(var(--hourH) - 1px),
+          #151515 var(--hourH)
+        );
+      pointer-events:none;
+    }
+
+    /* Show block placed by absolute positioning */
+    .show {
+      position:absolute; left:4px; right:4px;
+      border-left:6px solid var(--chip, #5A8785);
+      background: color-mix(in srgb, var(--chip, #5A8785) 18%, #0b0b0b);
+      box-shadow: 0 1px 0 rgba(0,0,0,.4);
+      border-radius:6px; padding:.35rem .5rem; overflow:hidden;
+    }
+    .show .time { font-size:.78rem; color:#d0d0d0; }
+    .show .title { font-weight:800; color:#fff; line-height:1.2; }
+    .show .host { font-size:.85rem; color:#b7b7b7; }
+
+    /* Archive colour enforced */
+    .is-archive { --chip: #263238; background: #0f1214; border-color:#455a64; }
+
+    @supports not (background: color-mix(in srgb, #000 10%, #fff)) {
+      /* Fallback if color-mix isn't supported */
+      .show { background: #121212; }
+    }
+
+    @media (max-width: 980px) {
+      .week-grid { grid-template-columns: 48px 1fr; }
+      .day-col { grid-column: 2 / -1; }
+      .time-col { grid-column: 1; }
+      /* Stack days vertically on smaller screens */
+      .week-grid { grid-auto-rows: auto; }
+    }
   </style>
 
   <!-- Chromecast init (kept, matches index) -->
@@ -131,7 +193,7 @@
 </head>
 
 <body>
-  <!-- NAV (exact structure as index + Schedule link present) -->
+  <!-- NAV -->
   <nav id="main-nav">
     <div class="nav-item nav-left">
       <a href="our-story.html" class="nav-link">OUR STORY</a>
@@ -238,7 +300,25 @@
       return weeks;
     };
 
-    // ==== FETCH MONTH (using the same API shape as your homepage) ====
+    // format “YYYY-MM-DD” in a chosen tz (or local)
+    const ymdInTz = (d, tz) => {
+      return new Intl.DateTimeFormat('en-CA', { timeZone: tz === 'local' ? undefined : tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+    };
+    // minutes since start of day in chosen tz
+    const minutesInDay = (d, tz) => {
+      const parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: tz === 'local' ? undefined : tz,
+        hour: '2-digit', minute: '2-digit', hour12: false
+      }).formatToParts(d);
+      let hh = 0, mm = 0;
+      for (const p of parts) {
+        if (p.type === 'hour') hh = parseInt(p.value, 10);
+        if (p.type === 'minute') mm = parseInt(p.value, 10);
+      }
+      return hh * 60 + mm;
+    };
+
+    // ==== FETCH MONTH ====
     async function fetchMonthRange(rangeStartISO, rangeEndISO) {
       const { schedules = [] } = await rcFetch(`/station/${STATION_ID}/schedule?startDate=${encodeURIComponent(rangeStartISO)}&endDate=${encodeURIComponent(rangeEndISO)}`);
       return schedules.map(s => ({
@@ -247,73 +327,126 @@
         title: s.title || s.content?.title || s.content?.name || "Untitled show",
         host:  (Array.isArray(s.content?.presenters) ? s.content.presenters.map(p => p.name).filter(Boolean).join(", ") : "")
                || s.metadata?.artist || s.dj || "",
-        art:   s.metadata?.artwork?.default || s.metadata?.artwork?.original || s.image || ""
+        art:   s.metadata?.artwork?.default || s.metadata?.artwork?.original || s.image || "",
+        raw: s
       })).filter(s => s.start && s.end);
     }
 
-    // ==== RENDER ====
-    function colorFromTitle(t) {
-      let h=0; for (let i=0;i<t.length;i++) h=(h*31+t.charCodeAt(i))>>>0;
-      return `hsl(${h%360} 45% 38%)`;
+    // ==== COLOURS ====
+    // Order-of-day palette (1st show, 2nd show, 3rd show, …), repeats if more than 8 in a day.
+    const ORDER_PALETTE = [
+      '#1E88E5', // blue
+      '#43A047', // green
+      '#FB8C00', // orange
+      '#8E24AA', // purple
+      '#00ACC1', // cyan
+      '#F4511E', // deep orange
+      '#7CB342', // lime green
+      '#5E35B1'  // indigo
+    ];
+    const ARCHIVE_COLOR = '#263238';
+
+    const isArchive = (s) => {
+      const blob = `${s.title||''} ${s.host||''}`.toLowerCase();
+      return blob.includes('archive') || blob.includes('archives');
+    };
+
+    function colourForIndex(index) {
+      return ORDER_PALETTE[(index) % ORDER_PALETTE.length];
     }
+
+    // ==== RENDER ====
     function fmtTime(d, tz) {
       if (tz === "local") return new Intl.DateTimeFormat(undefined,{hour:"2-digit",minute:"2-digit"}).format(d);
       return new Intl.DateTimeFormat(undefined,{hour:"2-digit",minute:"2-digit", timeZone: tz}).format(d);
     }
     function escapeHtml(str){return String(str).replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]));}
 
+    function buildTimeRuler() {
+      const col = document.createElement('div');
+      col.className = 'time-col';
+      for (let h=0; h<24; h++) {
+        const label = document.createElement('div');
+        label.className = 'hour-label';
+        label.style.top = `calc(${h} * var(--hourH))`;
+        label.textContent = String(h).padStart(2,'0') + ':00';
+        col.appendChild(label);
+      }
+      return col;
+    }
+
     function renderMonth(date, shows, tz) {
       const mount = document.getElementById("weeksStack");
       mount.innerHTML = "";
       document.getElementById("monthTitle").textContent = fmtMonth(date);
 
+      // Bucket by day in the chosen tz and sort by start
       const buckets = new Map();
-      const toKey = d => `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}`;
       shows.forEach(s => {
         const st = new Date(s.start);
-        const key = toKey(new Date(Date.UTC(st.getUTCFullYear(), st.getUTCMonth(), st.getUTCDate())));
+        const key = ymdInTz(st, tz);
         if (!buckets.has(key)) buckets.set(key, []);
         buckets.get(key).push(s);
       });
-      for (const [,arr] of buckets) arr.sort((a,b)=> new Date(a.start) - new Date(b.start));
+      for (const [, arr] of buckets) arr.sort((a,b)=> new Date(a.start) - new Date(b.start));
 
       const weeks = splitMonthIntoWeeks(date);
-      weeks.forEach(({start, end}) => {
+
+      weeks.forEach(({start}) => {
         const weekEl = document.createElement("section");
         weekEl.className = "week-grid";
+
+        // Time ruler
+        weekEl.appendChild(buildTimeRuler());
+
+        // Build each day
         const d = new Date(start);
         for (let i=0;i<7;i++) {
-          const col = document.createElement("div");
-          col.className = "day-col";
+          const dayCol = document.createElement("div");
+          dayCol.className = "day-col";
           const head = document.createElement("div");
           head.className = "day-head";
           const dow = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][(d.getUTCDay()+6)%7];
           head.innerHTML = `<div class="dow">${dow}</div><div class="date">${d.getUTCDate()} ${d.toLocaleString(undefined,{month:'short'})}</div>`;
-          const list = document.createElement("div"); list.className = "shows";
+          const body = document.createElement("div");
+          body.className = "day-body";
 
           const key = `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}`;
-          const todays = buckets.get(key) || [];
-          if (todays.length === 0) {
-            const empty = document.createElement("div");
-            empty.style.opacity = .5; empty.style.fontSize = ".9rem"; empty.textContent = "No scheduled shows";
-            list.appendChild(empty);
-          } else {
-            todays.forEach(s => {
-              const st = new Date(s.start), en = new Date(s.end);
-              const card = document.createElement("div"); card.className = "show";
-              card.style.setProperty("--chip-color", colorFromTitle(s.title));
-              card.innerHTML = `
-                <div class="time">${fmtTime(st, tz)}–${fmtTime(en, tz)}</div>
-                <div class="title">${escapeHtml(s.title)}</div>
-                ${s.host ? `<div class="host">${escapeHtml(s.host)}</div>` : ""}
-              `;
-              list.appendChild(card);
-            });
-          }
-          col.append(head, list);
-          weekEl.appendChild(col);
+          // key must be the tz version:
+          const keyTz = ymdInTz(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())), tz);
+          const todays = buckets.get(keyTz) || [];
+
+          // Assign colours by order within the day
+          todays.forEach((s, idx) => {
+            const st = new Date(s.start), en = new Date(s.end);
+            const startMin = minutesInDay(st, tz);
+            const endMin = Math.max(startMin + 15, minutesInDay(en, tz)); // minimum 15 min visual
+            const top = (startMin) + 'px'; // we’ll convert below
+            const height = (endMin - startMin) + 'px';
+
+            const show = document.createElement('div');
+            show.className = "show";
+            const isArc = isArchive(s);
+            const color = isArc ? ARCHIVE_COLOR : colourForIndex(idx);
+            show.style.setProperty('--chip', color);
+            // translate minutes -> pixels via CSS var
+            show.style.top = `calc(${startMin} * (var(--hourH) / 60))`;
+            show.style.height = `calc(${Math.max(20, (endMin-startMin))} * (var(--hourH) / 60))`;
+            if (isArc) show.classList.add('is-archive');
+
+            show.innerHTML = `
+              <div class="time">${fmtTime(st, tz)}–${fmtTime(en, tz)}</div>
+              <div class="title">${escapeHtml(s.title)}</div>
+              ${s.host ? `<div class="host">${escapeHtml(s.host)}</div>` : ""}
+            `;
+            body.appendChild(show);
+          });
+
+          dayCol.append(head, body);
+          weekEl.appendChild(dayCol);
           d.setUTCDate(d.getUTCDate()+1);
         }
+
         mount.appendChild(weekEl);
       });
     }
@@ -353,8 +486,8 @@
     // Boot
     loadMonth();
 
-    // Cast manual fallback (optional)
-    document.getElementById('manualCastBtn').addEventListener('click', () => {
+    // Manual cast fallback
+    document.getElementById('manualCastBtn')?.addEventListener('click', () => {
       const context = cast.framework.CastContext.getInstance();
       context.requestSession().catch(err => console.error('Fallback session error', err));
     });
