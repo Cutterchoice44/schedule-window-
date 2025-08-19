@@ -347,6 +347,19 @@ section h2::after {
   border-bottom: 0.4px solid var(--brand-teal);
 }
 
+/* Thin separators for "This Week’s Lineup" */
+#schedule-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* border acts as the divider */
+}
+#schedule-container > * {
+  padding: 0.35rem 0.5rem;
+}
+#schedule-container > * + * {
+  border-top: 2px solid var(--brand-teal); /* set to 1px if you want thinner */
+}
+
 /* ─── FOOTER BANNER ────────────────────────────────────────────── */
 .banner {
   display: flex;
