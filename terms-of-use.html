@@ -70,22 +70,23 @@
     /* Show block — FULL bright colour */
     .show{
       grid-column:1/-1;margin:2px 4px;
-      background:var(--chip,#22D3EE); color:var(--fg,#001318);
+      background:var(--chip,#FBBF24); color:var(--fg,#1b0f00);
       border-radius:10px; padding:.48rem .6rem; overflow:hidden;
+      box-shadow: inset 0 0 0 2px rgba(0,0,0,.2);
     }
     .show .time{font-size:.78rem;opacity:.95}
     .show .title{font-weight:800;line-height:1.2}
     .show .host{font-size:.85rem;opacity:.92}
 
-    /* Brighter palette (bg + text) */
-    .tone-1{--chip:#06B6D4;--fg:#001318} /* cyan */
-    .tone-2{--chip:#10B981;--fg:#00150e} /* green */
-    .tone-3{--chip:#F59E0B;--fg:#1b0f00} /* amber */
-    .tone-4{--chip:#F97316;--fg:#1a0900} /* orange */
-    .tone-5{--chip:#A78BFA;--fg:#0e0a1a} /* violet */
-    .tone-6{--chip:#EC4899;--fg:#220713} /* pink  */
-    .tone-7{--chip:#4ADE80;--fg:#041307} /* light green */
-    .tone-8{--chip:#60A5FA;--fg:#0a1a35} /* light blue */
+    /* Palette (warm tones first so 1st show pops) */
+    .tone-1{--chip:#FBBF24;--fg:#1b0f00} /* gold */
+    .tone-2{--chip:#FB923C;--fg:#1a0900} /* orange */
+    .tone-3{--chip:#EC4899;--fg:#220713} /* pink  */
+    .tone-4{--chip:#A78BFA;--fg:#0e0a1a} /* violet */
+    .tone-5{--chip:#06B6D4;--fg:#001318} /* cyan */
+    .tone-6{--chip:#60A5FA;--fg:#0a1a35} /* light blue */
+    .tone-7{--chip:#10B981;--fg:#00150e} /* green */
+    .tone-8{--chip:#4ADE80;--fg:#041307} /* light green */
 
     /* Archives = LIGHTER blue and readable text */
     .is-archive{--chip:#93C5FD;--fg:#0b1f3f}
@@ -115,13 +116,14 @@
   <!-- NAV -->
   <nav id="main-nav">
     <div class="nav-item nav-left">
+      <a href="index.html" class="nav-link">HOME</a>
       <a href="our-story.html" class="nav-link">OUR STORY</a>
     </div>
     <div class="nav-item nav-center">
       <a href="index-ourDJS.html" class="nav-link">OUR DJS</a>
     </div>
     <div class="nav-item nav-right">
-      <a href="schedule.html" class="nav-link">SCHEDULE</a>
+      <!-- Removed SCHEDULE (redundant on this page) -->
       <a href="merch.html" class="nav-link">MERCH</a>
 
       <a href="https://facebook.com/cutterschoiceradio" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
@@ -144,14 +146,15 @@
     <div class="utilities">
       <button class="ccr-btn" id="todayBtn" title="Jump to current week">This Week</button>
       <div class="legend">
-        <span class="chip" style="background:#06B6D4"></span>
-        <span class="chip" style="background:#10B981"></span>
-        <span class="chip" style="background:#F59E0B"></span>
-        <span class="chip" style="background:#F97316"></span>
-        <span class="chip" style="background:#A78BFA"></span>
+        <!-- Warm-first chips -->
+        <span class="chip" style="background:#FBBF24"></span>
+        <span class="chip" style="background:#FB923C"></span>
         <span class="chip" style="background:#EC4899"></span>
-        <span class="chip" style="background:#4ADE80"></span>
+        <span class="chip" style="background:#A78BFA"></span>
+        <span class="chip" style="background:#06B6D4"></span>
         <span class="chip" style="background:#60A5FA"></span>
+        <span class="chip" style="background:#10B981"></span>
+        <span class="chip" style="background:#4ADE80"></span>
         <small style="opacity:.85;">Order of shows each day</small>
         <span class="chip" style="background:#93C5FD;margin-left:.5rem;"></span>
         <small style="opacity:.85;">Archives</small>
@@ -285,11 +288,12 @@
     }
 
     /* ===== Render ===== */
-    const fmtTime = (d, tz) => tz==="local"
-      ? new Intl.DateTimeFormat(undefined,{hour:"2-digit",minute:"2-digit"}).format(d)
-      : new Intl.DateTimeFormat(undefined,{hour:"2-digit",minute:"2-digit",timeZone:tz}).format(d);
-
-    const escapeHtml = (str)=> String(str).replace(/[&<>"]/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]));
+    const fmtHM = (min) => {
+      let h = Math.floor(min/60), m = min % 60;
+      const ampm = h >= 12 ? 'pm':'am';
+      let hh = ((h + 11) % 12) + 1;
+      return `${String(hh).padStart(2,'0')}:${String(m).padStart(2,'0')} ${ampm}`;
+    };
 
     function buildTimeRuler(){
       const col=document.createElement('div'); col.className='time-col';
@@ -336,11 +340,12 @@
             const show=document.createElement('div');
             show.className='show ' + (seg.archive ? 'is-archive' : ORDER_CLASSES[(orderIndex++) % ORDER_CLASSES.length]);
             show.style.gridRow = `${startQ+1} / span ${spanQ}`;
-            const st = new Date(seg.start || `${dayKey}T00:00:00Z`), en = new Date(seg.end || `${dayKey}T23:59:59Z`);
+
+            // times from the segment minutes (correct for split/overnight & fillers)
             show.innerHTML = `
-              <div class="time">${fmtTime(st, tz)}–${fmtTime(en, tz)}</div>
-              <div class="title">${escapeHtml(seg.title)}</div>
-              ${seg.host ? `<div class="host">${escapeHtml(seg.host)}</div>` : ""}
+              <div class="time">${fmtHM(seg.segStartMin)}–${fmtHM(seg.segEndMin)}</div>
+              <div class="title">${String(seg.title).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+              ${seg.host ? `<div class="host">${String(seg.host).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>` : ""}
             `;
             if (seg.archive) { orderIndex--; } // archives don't consume colour slots
             body.appendChild(show);
