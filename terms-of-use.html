@@ -70,11 +70,12 @@
     .page-header{
       display:flex; align-items:center; justify-content:space-between;
       padding:.5rem .75rem; border-bottom:2px solid #000; background:var(--brand-teal);
+      opacity:1 !important;
     }
     .page-header h1{
       font-family:'Bebas Neue',sans-serif; font-size:2.2rem;
       letter-spacing:.5px; color:#fff !important; margin:0;
-      text-shadow:0 1px 0 rgba(0,0,0,.35);
+      text-shadow:0 1px 0 rgba(0,0,0,.35); opacity:1 !important; filter:none !important;
     }
 
     .utilities{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
@@ -91,6 +92,7 @@
       font-family:'Bebas Neue',sans-serif; font-size:2rem;
       color:#fff !important; letter-spacing:.5px;
       text-shadow:0 1px 0 rgba(0,0,0,.35);
+      opacity:1 !important;
     }
     .ccr-btn{
       background:var(--brand-teal); color:#fff; border:none; border-radius:6px;
@@ -99,7 +101,7 @@
 
     .weeks-stack{ display:flex; flex-direction:column; gap:1.25rem; padding:1rem .75rem 2rem; }
 
-    /* === 2-row grid so time ruler aligns with day bodies === */
+    /* === Desktop: 2-row grid so time ruler aligns with day bodies === */
     .week-grid{
       display:grid;
       grid-template-columns:64px repeat(7,1fr);
@@ -132,8 +134,7 @@
     .day-head{
       grid-row:1;
       background:#0d0d0d; border:1px solid #1e1e1e; padding:.45rem .5rem;
-      border-radius:6px;
-      color:#fff !important;
+      border-radius:6px; color:#fff !important; opacity:1 !important; filter:none !important;
     }
     .day-head .dow{
       font-family:'Bebas Neue',sans-serif;
@@ -177,18 +178,41 @@
     .tone-8{--chip:#4ADE80;--fg:#041307}
     .is-archive{--chip:#93C5FD;--fg:#0b1f3f}
 
-    /* Mobile: collapse to two columns (time + single flow of days) */
+    /* ===== Mobile layout =====
+       - make each week a vertical stack of (day-head + day-body)
+       - hide the single weekly time ruler (the block times remain visible inside shows)
+       - tighten spacing & increase legibility
+    */
     @media (max-width:980px){
+      .weeks-stack{ gap:1rem; padding:0.5rem 0.5rem 1.25rem; }
+
       .week-grid{
-        grid-template-columns:48px 1fr;
-        grid-template-rows:none;
+        display:block;                 /* abandon the desktop grid */
+        padding:0; border:none; background:transparent;
       }
-      .time-head{ display:none; }
-      .day-head{ grid-column:2; }
-      .day-body{ grid-column:2; }
+      .time-head, .time-col{ display:none !important; } /* hide left ruler on phones */
+
+      .day-head{
+        margin:10px 6px 0;
+        border-radius:10px;
+        padding:.5rem .65rem;
+      }
+      .day-head .dow{ font-size:1.25rem; }
+      .day-head .date{ font-size:1rem; }
+
+      .day-body{
+        margin:6px;                    /* card spacing */
+        border-radius:12px;
+        height:calc(var(--hourH)*24);  /* keep same scale */
+      }
+
+      .show{ padding:.44rem .55rem; margin:2px 3px; }
+      .show .time{ font-size:.82rem; }
+      .show .title{ font-size:.95rem; }
+      .show .host{ font-size:.82rem; }
     }
 
-    /* Footer (unchanged) */
+    /* Footer */
     .banner{display:flex;gap:1rem;justify-content:center;padding:1rem;border-top:2px solid #000}
     .banner a{color:#fff;text-decoration:none}
   </style>
@@ -385,7 +409,7 @@
           const segStartMin = (key===kStart) ? minutesInDay(st, tz) : 0;
           const segEndMin   = (key===kEnd)   ? minutesInDay(en, tz) : 24*60;
           const seg = { ...s, segStartMin, segEndMin: Math.max(segStartMin+15, segEndMin), archive: isArchive(s) };
-          if (!map.has(key)) map.set(key, []);  /* <-- fixed bracket */
+          if (!map.has(key)) map.set(key, []);  /* fixed bracket */
           map.get(key).push(seg);
           if (key===kEnd) break;
           key = incYMD(key);
@@ -436,7 +460,7 @@
       const col=document.createElement('div'); col.className='time-col';
       for(let h=0;h<24;h++){
         const lab=document.createElement('div'); lab.className='hour-label';
-        lab.style.top=`calc(${h} * var(--hourH))`;     // align to the top of each hour cell (no offset)
+        lab.style.top=`calc(${h} * var(--hourH))`;     // align to the top of each hour cell
         lab.textContent=String(h).padStart(2,'0')+':00';
         col.appendChild(lab);
       }
@@ -457,9 +481,14 @@
         const spacer=document.createElement('div'); spacer.className='time-head';
         weekEl.appendChild(spacer);
 
-        // Day headers (row 1, cols 2..8)
+        // Time ruler (row 2, col 1) — hidden on mobile via CSS
+        weekEl.appendChild(buildTimeRuler());
+
+        // Interleave each day head + body (better for mobile flow)
         for(let i=0;i<7;i++){
           const dayUtc = addDaysUTC(anchorUtc, w*7 + i);
+
+          // header
           const head=document.createElement('div'); head.className='day-head';
           head.style.gridColumn = String(i+2);
           head.innerHTML = `
@@ -467,14 +496,8 @@
             <div class="date">${fmtDMtz(dayUtc, tz)}</div>
           `;
           weekEl.appendChild(head);
-        }
 
-        // Time ruler (row 2, col 1)
-        weekEl.appendChild(buildTimeRuler());
-
-        // Day bodies (row 2, cols 2..8)
-        for(let i=0;i<7;i++){
-          const dayUtc = addDaysUTC(anchorUtc, w*7 + i);
+          // body
           const body=document.createElement('div'); body.className='day-body';
           body.style.gridColumn = String(i+2);
 
