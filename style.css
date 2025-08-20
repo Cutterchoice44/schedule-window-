@@ -74,7 +74,8 @@ html, body {
   100% { transform: translateX(100vw); }
 }
 
-header::before {
+/* ✅ FIX: limit the dark overlay to the animated banner only */
+.header-banner::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -82,6 +83,7 @@ header::before {
   z-index: 0;
 }
 
+/* keep these on the banner header only */
 header .logo-container,
 header .title {
   position: relative;
@@ -336,7 +338,7 @@ section h2::after {
   cursor: pointer;
 }
 
-/* ─── WEEKLY SCHEDULE ──────────────────────────────────────────── */
+/* ─── WEEKLY SCHEDULE (legacy list) ─────────────────────────────── */
 .schedule {
   background: #111;
   border-radius: 6px;
@@ -582,4 +584,21 @@ section h2::after {
     margin-bottom: 1.5rem !important;
     width: auto !important;
   }
+}
+
+/* ─── SCHEDULE PAGE: make headings truly white ────────────────────── */
+/* Monthly Schedule page header + week title */
+.page-header h1,
+.month-controls .title {
+  color:#fff !important;
+}
+
+/* Day-of-week + date labels in grid */
+.week-grid .day-head,
+.week-grid .day-head .dow,
+.week-grid .day-head .date {
+  color:#fff !important;
+  opacity:1 !important;              /* in case any parent sets opacity */
+  filter:none !important;
+  mix-blend-mode:normal !important;
 }
