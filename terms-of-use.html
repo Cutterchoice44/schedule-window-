@@ -16,7 +16,7 @@
       --brand-teal:#5A8785;
 
       /* schedule scale */
-      --hourH:52px;                 /* height per hour */
+      --hourH:52px;                 /* height per hour (change once, affects all) */
       --qH:calc(var(--hourH)/4);    /* 15-min slots */
     }
 
@@ -99,7 +99,7 @@
 
     .weeks-stack{ display:flex; flex-direction:column; gap:1.25rem; padding:1rem .75rem 2rem; }
 
-    /* === NEW: 2-row grid so time ruler aligns with day bodies === */
+    /* === 2-row grid so time ruler aligns with day bodies === */
     .week-grid{
       display:grid;
       grid-template-columns:64px repeat(7,1fr);
@@ -116,11 +116,13 @@
     .time-col{
       grid-column:1; grid-row:2;
       position:relative; height:calc(var(--hourH)*24); border:1px solid #1c1c1c; border-radius:6px;
-      background:repeating-linear-gradient(to bottom,#0b0b0b 0,#0b0b0b calc(var(--hourH) - 1px),#1e1e1e calc(var(--hourH) - 1px),#1e1e1e var(--hourH));
+      /* crisp hour lines that match day bodies exactly */
+      background-color:#0b0b0b;
+      background-image:linear-gradient(to bottom,#1e1e1e 1px,transparent 1px);
+      background-size:100% var(--hourH);
     }
     .time-col .hour-label{
-      position:absolute; left:6px;               /* sit inside each hour cell */
-      /* place label at the top of its hour cell (no 50% shift) */
+      position:absolute; left:6px;
       font-size:1rem; color:#fff !important; line-height:1;
       text-shadow:0 1px 0 rgba(0,0,0,.35);
       pointer-events:none;
@@ -131,7 +133,7 @@
       grid-row:1;
       background:#0d0d0d; border:1px solid #1e1e1e; padding:.45rem .5rem;
       border-radius:6px;
-      color:#fff !important;       /* enforce bright white */
+      color:#fff !important;
     }
     .day-head .dow{
       font-family:'Bebas Neue',sans-serif;
@@ -148,7 +150,9 @@
       grid-row:2;
       display:grid; grid-template-rows:repeat(96,var(--qH)); position:relative;
       height:calc(var(--hourH)*24); border:1px solid #1c1c1c; border-radius:6px; overflow:hidden;
-      background:repeating-linear-gradient(to bottom,#0b0b0b 0,#0b0b0b calc(var(--hourH) - 1px),#1a1a1a calc(var(--hourH) - 1px),#1a1a1a var(--hourH));
+      background-color:#0b0b0b;
+      background-image:linear-gradient(to bottom,#1a1a1a 1px,transparent 1px);
+      background-size:100% var(--hourH);
     }
 
     /* Show block — full bright color */
@@ -177,12 +181,16 @@
     @media (max-width:980px){
       .week-grid{
         grid-template-columns:48px 1fr;
-        grid-template-rows:none;       /* auto flow */
+        grid-template-rows:none;
       }
       .time-head{ display:none; }
       .day-head{ grid-column:2; }
       .day-body{ grid-column:2; }
     }
+
+    /* Footer (unchanged) */
+    .banner{display:flex;gap:1rem;justify-content:center;padding:1rem;border-top:2px solid #000}
+    .banner a{color:#fff;text-decoration:none}
   </style>
 
   <!-- Chromecast init -->
@@ -377,7 +385,7 @@
           const segStartMin = (key===kStart) ? minutesInDay(st, tz) : 0;
           const segEndMin   = (key===kEnd)   ? minutesInDay(en, tz) : 24*60;
           const seg = { ...s, segStartMin, segEndMin: Math.max(segStartMin+15, segEndMin), archive: isArchive(s) };
-          if (!map.has(key)) map.set(key, [];
+          if (!map.has(key)) map.set(key, []);  /* <-- fixed bracket */
           map.get(key).push(seg);
           if (key===kEnd) break;
           key = incYMD(key);
@@ -428,8 +436,8 @@
       const col=document.createElement('div'); col.className='time-col';
       for(let h=0;h<24;h++){
         const lab=document.createElement('div'); lab.className='hour-label';
-        lab.style.top=`calc(${h} * var(--hourH) + 2px)`;    // align to top of each hour cell
-        lab.textContent=String(h).padStart(2,'0')+':00';    // keep 24h labels
+        lab.style.top=`calc(${h} * var(--hourH))`;     // align to the top of each hour cell (no offset)
+        lab.textContent=String(h).padStart(2,'0')+':00';
         col.appendChild(lab);
       }
       return col;
@@ -483,7 +491,7 @@
             } else {
               const key = (seg.start||'') + '|' + (seg.title||'');
               const ord = ukOrderLookup.get(key) ?? 0;
-              classes += ['tone-1','tone-2','tone-3','tone-4','tone-5','tone-6','tone-7','tone-8'][ord % 8];
+              classes += ORDER_CLASSES[ord % ORDER_CLASSES.length];
             }
             show.className = classes;
             show.style.gridRow = `${startQ+1} / span ${spanQ}`;
