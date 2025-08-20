@@ -14,13 +14,11 @@
   <style>
     :root{
       --brand-teal:#5A8785;
-
-      /* schedule scale */
-      --hourH:52px;                 /* height per hour (change once, affects all) */
+      --hourH:52px;                 /* height per hour */
       --qH:calc(var(--hourH)/4);    /* 15-min slots */
     }
 
-    /* NAV – matches home page spacing */
+    /* NAV */
     #main-nav{
       display:flex!important; align-items:center!important;
       gap:.5rem!important; width:100%!important;
@@ -41,14 +39,8 @@
       font-size:2rem!important; text-transform:uppercase!important;
       text-decoration:none!important; white-space:nowrap!important;
     }
-    #main-nav .nav-actions{
-      display:flex!important; align-items:center!important;
-      justify-content:flex-end!important; gap:.6rem!important;
-    }
-    #main-nav .social-icon{
-      display:inline-flex!important; align-items:center!important; justify-content:center!important;
-      color:#fff!important; text-decoration:none!important; line-height:1!important;
-    }
+    #main-nav .nav-actions{ display:flex!important; align-items:center!important; justify-content:flex-end!important; gap:.6rem!important; }
+    #main-nav .social-icon{ display:inline-flex!important; align-items:center!important; justify-content:center!important; color:#fff!important; text-decoration:none!important; line-height:1!important; }
     #main-nav .social-icon i{ font-size:2.1rem!important; }
     #main-nav .icon-img{ width:2.6rem!important; height:auto!important; margin-left:.25rem!important; }
     #main-nav .nav-onemusic{ display:flex; align-items:center; }
@@ -66,16 +58,17 @@
     html,body{ background:#000; color:#fafafa; }
     *{ box-sizing:border-box; }
 
-    /* Header bar above schedule */
+    /* Header bar */
     .page-header{
       display:flex; align-items:center; justify-content:space-between;
       padding:.5rem .75rem; border-bottom:2px solid #000; background:var(--brand-teal);
-      opacity:1 !important;
+      opacity:1 !important; filter:none !important;
     }
     .page-header h1{
       font-family:'Bebas Neue',sans-serif; font-size:2.2rem;
-      letter-spacing:.5px; color:#fff !important; margin:0;
-      text-shadow:0 1px 0 rgba(0,0,0,.35); opacity:1 !important; filter:none !important;
+      letter-spacing:.5px; margin:0; text-shadow:0 1px 0 rgba(0,0,0,.35);
+      color:#fff !important; opacity:1 !important; filter:none !important; mix-blend-mode:normal !important;
+      -webkit-text-fill-color:#fff !important;
     }
 
     .utilities{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
@@ -89,10 +82,10 @@
       position:sticky; top:0; background:#000; z-index:20;
     }
     .month-controls .title{
-      font-family:'Bebas Neue',sans-serif; font-size:2rem;
-      color:#fff !important; letter-spacing:.5px;
+      font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:.5px;
       text-shadow:0 1px 0 rgba(0,0,0,.35);
-      opacity:1 !important;
+      color:#fff !important; opacity:1 !important; filter:none !important; mix-blend-mode:normal !important;
+      -webkit-text-fill-color:#fff !important;
     }
     .ccr-btn{
       background:var(--brand-teal); color:#fff; border:none; border-radius:6px;
@@ -101,24 +94,21 @@
 
     .weeks-stack{ display:flex; flex-direction:column; gap:1.25rem; padding:1rem .75rem 2rem; }
 
-    /* === Desktop: 2-row grid so time ruler aligns with day bodies === */
+    /* DESKTOP week grid */
     .week-grid{
       display:grid;
       grid-template-columns:64px repeat(7,1fr);
-      grid-template-rows:auto 1fr;     /* row 1 = headers, row 2 = bodies */
+      grid-template-rows:auto 1fr;   /* row 1 = headers, row 2 = bodies */
       gap:6px;
       border:2px solid var(--brand-teal); border-radius:8px;
       overflow:hidden; background:#0f0f0f; padding:6px;
     }
-
-    /* Empty cell top-left just to keep header row height consistent */
     .time-head{ grid-column:1; grid-row:1; }
 
-    /* Time ruler (row 2) */
+    /* Time ruler */
     .time-col{
       grid-column:1; grid-row:2;
       position:relative; height:calc(var(--hourH)*24); border:1px solid #1c1c1c; border-radius:6px;
-      /* crisp hour lines that match day bodies exactly */
       background-color:#0b0b0b;
       background-image:linear-gradient(to bottom,#1e1e1e 1px,transparent 1px);
       background-size:100% var(--hourH);
@@ -130,23 +120,28 @@
       pointer-events:none;
     }
 
-    /* Day headers (row 1) */
+    /* Day headers */
     .day-head{
       grid-row:1;
-      background:#0d0d0d; border:1px solid #1e1e1e; padding:.45rem .5rem;
-      border-radius:6px; color:#fff !important; opacity:1 !important; filter:none !important;
+      background:#0d0d0d; border:1px solid #1e1e1e; padding:.48rem .6rem;
+      border-radius:6px;
+      color:#fff !important; opacity:1 !important; filter:none !important; mix-blend-mode:normal !important;
     }
     .day-head .dow{
       font-family:'Bebas Neue',sans-serif;
-      font-size:1.38rem; color:#fff !important; opacity:1 !important;
+      font-size:1.38rem;
+      color:#fff !important; opacity:1 !important; filter:none !important; mix-blend-mode:normal !important;
       text-shadow:0 1px 0 rgba(0,0,0,.35);
+      -webkit-text-fill-color:#fff !important;
     }
     .day-head .date{
-      font-size:1.06rem; color:#fff !important; opacity:1 !important;
+      font-size:1.06rem;
+      color:#fff !important; opacity:1 !important; filter:none !important; mix-blend-mode:normal !important;
       text-shadow:0 1px 0 rgba(0,0,0,.35);
+      -webkit-text-fill-color:#fff !important;
     }
 
-    /* Day bodies (row 2) */
+    /* Day bodies */
     .day-body{
       grid-row:2;
       display:grid; grid-template-rows:repeat(96,var(--qH)); position:relative;
@@ -156,7 +151,7 @@
       background-size:100% var(--hourH);
     }
 
-    /* Show block — full bright color */
+    /* Show cards */
     .show{
       grid-column:1/-1; margin:2px 4px;
       background:var(--chip,#FBBF24); color:var(--fg,#1b0f00);
@@ -178,38 +173,38 @@
     .tone-8{--chip:#4ADE80;--fg:#041307}
     .is-archive{--chip:#93C5FD;--fg:#0b1f3f}
 
-    /* ===== Mobile layout =====
-       - make each week a vertical stack of (day-head + day-body)
-       - hide the single weekly time ruler (the block times remain visible inside shows)
-       - tighten spacing & increase legibility
-    */
+    /* ===== MOBILE LAYOUT ===== */
     @media (max-width:980px){
-      .weeks-stack{ gap:1rem; padding:0.5rem 0.5rem 1.25rem; }
-
-      .week-grid{
-        display:block;                 /* abandon the desktop grid */
-        padding:0; border:none; background:transparent;
-      }
-      .time-head, .time-col{ display:none !important; } /* hide left ruler on phones */
+      .weeks-stack{ gap:1rem; padding:.5rem .5rem 1.25rem; }
+      .week-grid{ display:block; padding:0; border:none; background:transparent; }
+      .time-head, .time-col{ display:none !important; } /* hide left ruler */
 
       .day-head{
-        margin:10px 6px 0;
-        border-radius:10px;
-        padding:.5rem .65rem;
+        margin:12px 8px 0; padding:.55rem .7rem; border-radius:12px;
       }
-      .day-head .dow{ font-size:1.25rem; }
+      .day-head .dow{ font-size:1.22rem; }
       .day-head .date{ font-size:1rem; }
 
       .day-body{
-        margin:6px;                    /* card spacing */
-        border-radius:12px;
-        height:calc(var(--hourH)*24);  /* keep same scale */
+        margin:6px 8px 8px; border-radius:14px;
+        height:calc(var(--hourH)*24);
       }
-
       .show{ padding:.44rem .55rem; margin:2px 3px; }
-      .show .time{ font-size:.82rem; }
-      .show .title{ font-size:.95rem; }
-      .show .host{ font-size:.82rem; }
+      .show .time{ font-size:.84rem; }
+      .show .title{ font-size:.98rem; }
+      .show .host{ font-size:.84rem; }
+    }
+
+    /* ===== NUCLEAR WHITE OVERRIDE =====
+       Defuses any dimming from global CSS (opacity, blend modes, text-fill, etc.)
+    */
+    :where(.page-header, .page-header *, .month-controls .title,
+           .week-grid .day-head, .week-grid .day-head *){
+      color:#fff !important;
+      opacity:1 !important;
+      filter:none !important;
+      mix-blend-mode:normal !important;
+      -webkit-text-fill-color:#fff !important;
     }
 
     /* Footer */
@@ -325,12 +320,12 @@
     const addDaysUTC = (d, n) => { const x = new Date(d); x.setUTCDate(x.getUTCDate()+n); return x; };
     const startOfWeekUTC = (date) => { const d=new Date(Date.UTC(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())); const day=(d.getUTCDay()+6)%7; d.setUTCDate(d.getUTCDate()-day); d.setUTCHours(0,0,0,0); return d; };
 
-    // yyyy-mm-dd in chosen tz
+    /* yyyy-mm-dd in chosen tz */
     const ymdInTz = (d, tz) => new Intl.DateTimeFormat('en-CA',{
       timeZone: tz==='local'?undefined:tz, year:'numeric',month:'2-digit',day:'2-digit'
     }).format(d);
 
-    // minutes since day start in tz
+    /* minutes since day start in tz */
     const minutesInDay = (d, tz) => {
       const parts = new Intl.DateTimeFormat('en-GB',{
         timeZone: tz==='local'?undefined:tz, hour:'2-digit', minute:'2-digit', hour12:false
@@ -341,41 +336,29 @@
 
     const fmtHM = (min) => {
       let h = Math.floor(min/60), m = min % 60;
-      const ampm = h >= 12 ? 'pm':'am';
+      const ampm = h >= 12 ? 'pm' : 'am';
       let hh = ((h + 11) % 12) + 1;
       return `${String(hh).padStart(2,'0')}:${String(m).padStart(2,'0')} ${ampm}`;
     };
 
-    /* === Timezone-aware labels === */
+    /* labels in tz */
     const dowInTz = (d, tz) =>
-      new Intl.DateTimeFormat('en-GB', {
-        timeZone: tz === 'local' ? undefined : tz,
-        weekday: 'short'
-      }).format(d).toUpperCase();
+      new Intl.DateTimeFormat('en-GB', { timeZone: tz === 'local' ? undefined : tz, weekday:'short' })
+      .format(d).toUpperCase();
 
     const fmtDMtz = (d, tz) =>
-      new Intl.DateTimeFormat(undefined, {
-        timeZone: tz === 'local' ? undefined : tz,
-        day: 'numeric',
-        month: 'short'
-      }).format(d);
+      new Intl.DateTimeFormat(undefined, { timeZone: tz === 'local' ? undefined : tz, day:'numeric', month:'short' })
+      .format(d);
 
     const rangeLabelInTz = (startUtc, endUtc, tz) => {
-      const f = (d,opts)=> new Intl.DateTimeFormat(undefined, {
-        ...(tz==='local'?{}:{timeZone:tz}), ...opts
-      }).format(d);
-      const sameMonthYear =
-        f(startUtc,{month:'numeric',year:'numeric'}) === f(endUtc,{month:'numeric',year:'numeric'});
-      if (sameMonthYear) {
-        const moYr = f(startUtc,{month:'long',year:'numeric'});
-        return `${moYr} • ${f(startUtc,{day:'2-digit',month:'short'})}–${f(endUtc,{day:'2-digit'})}`;
-      }
+      const f = (d,opts)=> new Intl.DateTimeFormat(undefined, { ...(tz==='local'?{}:{timeZone:tz}), ...opts }).format(d);
+      const same = f(startUtc,{month:'numeric',year:'numeric'}) === f(endUtc,{month:'numeric',year:'numeric'});
+      if (same) return `${f(startUtc,{month:'long',year:'numeric'})} • ${f(startUtc,{day:'2-digit',month:'short'})}–${f(endUtc,{day:'2-digit'})}`;
       return `${f(startUtc,{day:'2-digit',month:'short'})} – ${f(endUtc,{day:'2-digit',month:'short',year:'numeric'})}`;
     };
 
-    /* ===== Fetch 4-week block ===== */
+    /* fetch 4-week block */
     async function fetchRange(startUtc, endUtc) {
-      // pad by one day to survive DST & borders
       const paddedStart = addDaysUTC(startUtc, -1).toISOString();
       const paddedEnd   = addDaysUTC(endUtc,   1).toISOString();
       const { schedules = [] } = await rcFetch(`/station/${STATION_ID}/schedule?startDate=${encodeURIComponent(paddedStart)}&endDate=${encodeURIComponent(paddedEnd)}`);
@@ -389,15 +372,16 @@
       })).filter(s => s.start && s.end);
     }
 
-    /* ===== Colour rules ===== */
+    /* color rules */
     const ORDER_CLASSES = ['tone-1','tone-2','tone-3','tone-4','tone-5','tone-6','tone-7','tone-8'];
     const isArchive = (s) => {
       const blob = `${s.title||''} ${s.host||''}`.toLowerCase();
       return blob.includes('archive') || blob.includes('archives');
     };
 
-    /* ===== Split overnight and fill gaps with Archives ===== */
-    const incYMD = (s) => { const [y,m,d]=s.split('-').map(Number); const dt=new Date(Date.UTC(y,m-1,d)); dt.setUTCDate(dt.getUTCDate()+1); return `${dt.getUTCFullYear()}-${pad(dt.getUTCMonth()+1)}-${pad(dt.getUTCDate())}`; };
+    /* split overnight & fill gaps */
+    const pad2 = n=>String(n).padStart(2,'0');
+    const incYMD = (s) => { const [y,m,d]=s.split('-').map(Number); const dt=new Date(Date.UTC(y,m-1,d)); dt.setUTCDate(dt.getUTCDate()+1); return `${dt.getUTCFullYear()}-${pad2(dt.getUTCMonth()+1)}-${pad2(dt.getUTCDate())}`; };
 
     function splitShowsIntoDailySegments(shows, tz) {
       const map = new Map();
@@ -409,21 +393,17 @@
           const segStartMin = (key===kStart) ? minutesInDay(st, tz) : 0;
           const segEndMin   = (key===kEnd)   ? minutesInDay(en, tz) : 24*60;
           const seg = { ...s, segStartMin, segEndMin: Math.max(segStartMin+15, segEndMin), archive: isArchive(s) };
-          if (!map.has(key)) map.set(key, []);  /* fixed bracket */
+          if (!map.has(key)) map.set(key, []);
           map.get(key).push(seg);
           if (key===kEnd) break;
           key = incYMD(key);
         }
       }
-      // sort and fill gaps with archives to keep column solid
       for (const [key, arr] of map) {
         arr.sort((a,b)=> a.segStartMin - b.segStartMin);
-        const filled = [];
-        let cur = 0;
+        const filled = []; let cur = 0;
         for (const seg of arr) {
-          if (seg.segStartMin > cur) {
-            filled.push({ title:"Choice Cuts Archives", host:"", archive:true, segStartMin:cur, segEndMin:seg.segStartMin });
-          }
+          if (seg.segStartMin > cur) filled.push({ title:"Choice Cuts Archives", host:"", archive:true, segStartMin:cur, segEndMin:seg.segStartMin });
           filled.push(seg);
           cur = Math.max(cur, seg.segEndMin);
         }
@@ -433,7 +413,6 @@
       return map;
     }
 
-    /* ===== Build UK-day order lookup ===== */
     function buildUkOrderLookup(shows){
       const tz = 'Europe/London';
       const byDay = new Map();
@@ -455,12 +434,12 @@
       return lookup;
     }
 
-    /* Build the time ruler (row 2) with perfectly aligned labels */
+    /* time ruler */
     function buildTimeRuler(){
       const col=document.createElement('div'); col.className='time-col';
       for(let h=0;h<24;h++){
         const lab=document.createElement('div'); lab.className='hour-label';
-        lab.style.top=`calc(${h} * var(--hourH))`;     // align to the top of each hour cell
+        lab.style.top=`calc(${h} * var(--hourH))`;
         lab.textContent=String(h).padStart(2,'0')+':00';
         col.appendChild(lab);
       }
@@ -477,18 +456,16 @@
       for (let w=0; w<4; w++){
         const weekEl=document.createElement('section'); weekEl.className='week-grid';
 
-        // top-left spacer so headers row height matches
         const spacer=document.createElement('div'); spacer.className='time-head';
         weekEl.appendChild(spacer);
 
-        // Time ruler (row 2, col 1) — hidden on mobile via CSS
+        /* ruler (hidden on mobile) */
         weekEl.appendChild(buildTimeRuler());
 
-        // Interleave each day head + body (better for mobile flow)
+        /* interleave headers & bodies to help mobile flow */
         for(let i=0;i<7;i++){
           const dayUtc = addDaysUTC(anchorUtc, w*7 + i);
 
-          // header
           const head=document.createElement('div'); head.className='day-head';
           head.style.gridColumn = String(i+2);
           head.innerHTML = `
@@ -497,7 +474,6 @@
           `;
           weekEl.appendChild(head);
 
-          // body
           const body=document.createElement('div'); body.className='day-body';
           body.style.gridColumn = String(i+2);
 
@@ -533,8 +509,9 @@
       }
     }
 
-    /* ===== State & controls ===== */
-    let anchorUtc = startOfWeekUTC(new Date());  // Monday (UTC)
+    /* state & controls */
+    const addDaysUTC = (d,n)=>{const x=new Date(d);x.setUTCDate(x.getUTCDate()+n);return x;}; // redeclared for scoping in some bundlers
+    let anchorUtc = (function startOfWeekUTC(date){const d=new Date(Date.UTC(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()));const day=(d.getUTCDay()+6)%7;d.setUTCDate(d.getUTCDate()-day);d.setUTCHours(0,0,0,0);return d;})(new Date());
     let tzMode = "local";
 
     async function loadBlock(){
@@ -552,12 +529,12 @@
 
     document.getElementById('prevMonthBtn').addEventListener('click',()=>{ anchorUtc = addDaysUTC(anchorUtc, -28); loadBlock(); window.scrollTo({top:0}); });
     document.getElementById('nextMonthBtn').addEventListener('click',()=>{ anchorUtc = addDaysUTC(anchorUtc, +28); loadBlock(); window.scrollTo({top:0}); });
-    document.getElementById('todayBtn').addEventListener('click',()=>{ anchorUtc = startOfWeekUTC(new Date()); loadBlock(); window.scrollTo({top:0,behavior:'smooth'}); });
+    document.getElementById('todayBtn').addEventListener('click',()=>{ anchorUtc = (function(d){const x=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()));const k=(x.getUTCDay()+6)%7;x.setUTCDate(x.getUTCDate()-k);x.setUTCHours(0,0,0,0);return x;})(new Date()); loadBlock(); window.scrollTo({top:0,behavior:'smooth'}); });
     document.getElementById('tzSelect').addEventListener('change',e=>{ tzMode=e.target.value; loadBlock(); });
 
     loadBlock();
 
-    // manual cast fallback
+    /* cast fallback */
     document.getElementById('manualCastBtn')?.addEventListener('click',()=>{
       const context = cast.framework.CastContext.getInstance();
       context.requestSession().catch(err=>console.error('Fallback session error',err));
