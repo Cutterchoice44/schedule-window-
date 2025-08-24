@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <!-- Prevent browser caching -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma"       content="no-cache">
-  <meta http-equiv="Expires"      content="0">
-  <meta name="viewport"           content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Our Story – Cutters Choice Radio</title>
 
   <!-- Main CSS (v bump for cache) -->
@@ -24,71 +24,57 @@
     nav#main-nav        { position: relative; z-index: 20; }
 
     /* =========================
-       NAV – match Schedule look
+       NAV – match Image 2 look
        ========================= */
     nav#main-nav {
       background: var(--brand-teal);
-      border-top: 3px solid #000;   /* thin black stripes above/below */
-      border-bottom: 3px solid #000;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 14px;
+      /* two thin black lines that break the teal (top & bottom) */
+      position: relative;
+      padding: 10px 12px;
     }
+    nav#main-nav::before,
+    nav#main-nav::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0;
+      height: 2px;               /* thin line */
+      background: #000;
+      pointer-events: none;
+    }
+    nav#main-nav::before { top: 0; }
+    nav#main-nav::after  { bottom: 0; }
 
-    /* Left/center menu */
+    /* Centered, evenly spaced links across the bar */
     #main-nav .menu {
       list-style: none;
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
       align-items: center;
-      justify-content: center;                 /* items sit evenly across bar */
-      gap: clamp(28px, 7vw, 110px);
       margin: 0;
       padding: 0;
+      gap: 0;
       width: 100%;
     }
-
     #main-nav .menu a {
+      display: block;
+      text-align: center;
       font-family: 'Bebas Neue', sans-serif !important;
       text-decoration: none;
-      text-transform: none;
-      letter-spacing: 0.5px;
-      color: #f5f7f7;                          /* brighter white */
-      font-size: clamp(18px, 3.2vw, 28px);
+      color: #f5f7f7;             /* brighter white like Image 2 */
+      letter-spacing: .5px;
       line-height: 1;
-      opacity: 0.95;
+      /* size comparable to schedule bar; scales a touch on big/small screens */
+      font-size: clamp(20px, 2.6vw, 28px);
+      opacity: .95;
       transition: opacity .15s ease;
     }
     #main-nav .menu a:hover,
-    #main-nav .menu a.active {
-      opacity: 1;
-      color: #fff;
-    }
-
-    /* Right-side cluster (social + badge) */
-    #main-nav .right-cluster {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-left: auto;                       /* stick to the far right */
-      white-space: nowrap;
-    }
-    #main-nav .right-cluster a.social-icon {
-      color: #fff;
-      font-size: 18px;
-      line-height: 1;
-    }
-    #main-nav .right-cluster img.badge {
-      height: 20px;                            /* OneMusic badge size like Image 2 */
-      width: auto;
-      display: inline-block;
-      vertical-align: middle;
-    }
+    #main-nav .menu a.active { opacity: 1; color: #fff; }
 
     /* Story panels wrapper */
     .story-content {
       width: 90%;
-      margin: 4rem auto; /* top & bottom spacing */
+      margin: 4rem auto;
       background: #000;
       clear: both;
     }
@@ -107,21 +93,21 @@
       border: none;
     }
 
-    /* Embed video below the last panel instead of overlay */
+    /* Video below last panel */
     .history-image.history-last .video-overlay {
       position: relative;
       bottom: auto;
       left: auto;
       transform: none;
-      width: 70%;       /* match panel width */
+      width: 70%;
       max-width: 500px;
-      margin: 2rem auto; /* place it below the image */
+      margin: 2rem auto;
       z-index: 5;
     }
     .history-image.history-last .video-overlay .inner {
       position: relative;
       width: 100%;
-      padding-bottom: 56.25%; /* 16:9 aspect */
+      padding-bottom: 56.25%; /* 16:9 */
     }
     .history-image.history-last .video-overlay iframe {
       position: absolute;
@@ -130,7 +116,7 @@
       border: none;
     }
 
-    /* Back link style */
+    /* Back link */
     .back-home {
       display: inline-block;
       font-size: 1.6rem;
@@ -139,22 +125,13 @@
       text-decoration: none;
     }
 
-    /* Ensure footer sits below the content */
     footer.banner { margin-top: 3rem; }
 
-    /* ─── MOBILE OVERRIDES ───────────────────────────────────────── */
+    /* ─── MOBILE OVERRIDES ───────────────────────────── */
     @media (max-width: 768px) {
-      /* Slightly tighter nav for mobile */
-      nav#main-nav { padding: 8px 10px; }
-      #main-nav .menu {
-        gap: clamp(16px, 5vw, 40px);
-      }
-      #main-nav .menu a {
-        font-size: 20px;
-      }
-      #main-nav .right-cluster img.badge { height: 16px; }
+      nav#main-nav { padding: 8px 8px; }
+      #main-nav .menu a { font-size: 20px; }
 
-      /* Enlarge story images & video for mobile only (keep your original behaviour) */
       .history-image img { width: 100% !important; }
       .history-image.history-last .video-overlay { width: 75% !important; }
     }
@@ -178,25 +155,14 @@
     </div>
   </header>
 
-  <!-- UPDATED NAV (matches Image 2) -->
+  <!-- UPDATED NAV (links only, evenly spaced) -->
   <nav id="main-nav" aria-label="Primary">
     <ul class="menu">
-      <li><a href="index-ourStory.html" class="active">OUR STORY</a></li>
-      <li><a href="index-ourDJS.html">OUR DJS</a></li>
+      <li><a href="index.html">HOME</a></li>
+      <li><a href="index-ourDJS.html">OUR DJ&#39;s</a></li>
       <li><a href="schedule.html">SCHEDULE</a></li>
       <li><a href="merch.html">MERCH</a></li>
     </ul>
-
-    <div class="right-cluster">
-      <a href="https://facebook.com/cutterschoiceradio" target="_blank" class="social-icon" aria-label="Facebook">
-        <i class="fab fa-facebook-f"></i>
-      </a>
-      <a href="https://instagram.com/cutterschoiceradio" target="_blank" class="social-icon" aria-label="Instagram">
-        <i class="fab fa-instagram"></i>
-      </a>
-      <!-- OneMusic badge like the schedule page -->
-      <img src="images/OneMusicBadge.png" alt="We're licensed to play – OneMusic" class="badge" loading="lazy">
-    </div>
   </nav>
 
   <!-- STORY PANELS -->
