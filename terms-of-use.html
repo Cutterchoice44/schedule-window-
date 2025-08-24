@@ -4,195 +4,163 @@
   <meta charset="UTF-8">
   <!-- Prevent browser caching -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Our Story – Cutters Choice Radio</title>
-
-  <!-- Main CSS (v bump for cache) -->
-  <link rel="stylesheet" href="style.css?v=8">
-  <!-- Bebas Neue -->
+  <meta http-equiv="Pragma"       content="no-cache">
+  <meta http-equiv="Expires"      content="0">
+  <meta name="viewport"           content="width=device-width, initial-scale=1.0">
+  <title>Merch – Cutters Choice Radio</title>
+  
+  <!-- Main stylesheet & fonts/icons -->
+  <link rel="stylesheet" href="style.css?v=1748228619634">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Page-specific overrides -->
   <style>
-    :root { --brand-teal:#5A8785; }
-
-    /* Keep header/nav above content */
-    header.header-banner { position: relative; z-index: 20; }
-    nav#main-nav        { position: relative; z-index: 20; }
-
-    /* =========================
-       NAV – wider teal band + 2 THICK inner black lines
-       ========================= */
-    nav#main-nav{
-      /* tweak these two to taste */
-      --stripe-offset: 4px;        /* distance of black lines from top/bottom */
-      --stripe-thickness: 2px;     /* thickness of the black lines */
-
-      background:
-        /* top inner black line */
-        linear-gradient(#000,#000) 0 var(--stripe-offset)/100% var(--stripe-thickness) no-repeat,
-        /* bottom inner black line */
-        linear-gradient(#000,#000) 0 calc(100% - var(--stripe-offset))/100% var(--stripe-thickness) no-repeat,
-        /* teal fill */
-        var(--brand-teal);
-
-      padding: 18px 16px;          /* wider teal band */
+    :root {
+      --teal: #5A8785;
+      --dark: #000;
+      --light: #fafafa;
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      background-color: var(--dark);
+      color: var(--light);
+      font-family: Arial, sans-serif;
+      height: 100%;
     }
 
-    /* Centered, evenly spaced links across the bar */
-    #main-nav .menu{
-      list-style:none;
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      align-items:center;
-      margin:0;
-      padding:0;
-      width:100%;
+    /* ─── NAVIGATION BAR ─────────────────────────────────────────────────── */
+    #main-nav {
+      position: relative;
+      display: flex;
+      width: 100%;
+      margin-top: 1.0rem;
+      background-color: var(--teal);
+      padding: 0.5rem 0;
+      z-index: 1000;
     }
-    #main-nav .menu a{
-      display:block;
-      text-align:center;
-      font-family:'Bebas Neue',sans-serif !important;
-      text-decoration:none;
-      color:#f7f9f9;                /* bright white like your schedule bar */
-      letter-spacing:.6px;
-      line-height:1.5;
-      font-size:clamp(22px,2.8vw,30px);  /* same visual weight as Image 2 */
-      opacity:.95;
-      transition:opacity .15s ease;
+    /* Top stripes sit just above the teal bar */
+    #main-nav::before {
+      content: "";
+      position: absolute;
+      top: 1px;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(
+        to bottom,
+        #5A8785 0px,   /* white 0→2px */
+        #5A8785 2px,
+        #000 2px,   /* black 2→4px */
+        #000 4px
+      );
+      z-index: 2;
     }
-    #main-nav .menu a:hover,
-    #main-nav .menu a.active{ opacity:1; color:#fff; }
+    /* Bottom stripes sit just below the teal bar */
+    #main-nav::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(
+        to bottom,
+        #000 0px,   /* black 0→2px */
+        #000 2px,
+        #5A8785 2px,   /* white 2→4px */
+       #5A8785 4px
+      );
+      z-index: 2;
+    }
+    #main-nav .nav-item {
+      flex: 1;
+      text-align: center;
+    }
+    #main-nav .nav-item a {
+      color: #fff;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      text-transform: uppercase;
+      text-decoration: none;
+      line-height: 1.5;
+    }
+    @media (max-width: 768px) {
+      #main-nav {
+        flex-direction: column;
+        padding: 1rem 0;
+      }
+      #main-nav::before,
+      #main-nav::after {
+        display: none;
+      }
+      #main-nav .nav-item {
+        width: 100%;
+        margin: 1.5rem 0;
+      }
+    }
 
-    /* Story panels wrapper */
-    .story-content{
-      width:90%;
-      margin:4rem auto;
-      background:#000;
-      clear:both;
+    /* ─── MERCH SECTION & IFRAME ────────────────────────────────────────── */
+    .merch-section {
+      padding: 2rem 0;
+      margin: 0 auto 200px;   /* push footer below */
+      max-width: 100%;
+      text-align: center;
     }
-
-    /* Panel container */
-    .history-image{ position:relative; margin-bottom:2rem; text-align:center; }
-    .history-image img{
-      display:block; width:70%; height:auto; margin:0 auto; border:none;
-    }
-
-    /* Video below last panel */
-    .history-image.history-last .video-overlay{
-      position:relative; bottom:auto; left:auto; transform:none;
-      width:70%; max-width:500px; margin:2rem auto; z-index:5;
-    }
-    .history-image.history-last .video-overlay .inner{
-      position:relative; width:100%; padding-bottom:56.25%;
-    }
-    .history-image.history-last .video-overlay iframe{
-      position:absolute; top:0; left:0; width:100%; height:100%; border:none;
-    }
-
-    /* Back link */
-    .back-home{
-      display:inline-block; font-size:1.6rem; margin:2rem auto 3rem;
-      color:var(--brand-teal); text-decoration:none;
-    }
-
-    footer.banner{ margin-top:3rem; }
-
-    /* ─── MOBILE OVERRIDES ───────────────────────────── */
-    @media (max-width:768px){
-      nav#main-nav{ padding:14px 10px; --stripe-offset:5px; --stripe-thickness:4px; }
-      #main-nav .menu a{ font-size:22px; }
-
-      .history-image img{ width:100% !important; }
-      .history-image.history-last .video-overlay{ width:75% !important; }
+    .merch-section iframe {
+      width: 100%;
+      height: 1300px;         /* adjust to show all items */
+      border: none;
+      border-radius: 16px;
+      display: block;
+      margin: 0 auto;
     }
   </style>
 </head>
 
 <body>
-  <!-- HEADER (animated GIFs) -->
+  <!-- HEADER (with animated GIF slots) -->
   <header class="header-banner">
     <div class="header-gif-right"></div>
     <div class="header-gif-left"></div>
     <div class="logo-container">
-      <img class="logo" src="images/logo.png" alt="Logo" loading="lazy">
+      <img class="logo" src="/images/logo.png" alt="Cutters Choice Radio Logo" loading="lazy">
     </div>
     <div class="title">
       <h1>Cutters Choice Radio</h1>
       <p class="tagline">The home of relentless flavas and significant bangers!</p>
     </div>
     <div class="logo-container">
-      <img class="logo" src="images/logo.png" alt="Logo" loading="lazy">
+      <img class="logo" src="/images/logo.png" alt="Cutters Choice Radio Logo" loading="lazy">
     </div>
   </header>
 
-  <!-- UPDATED NAV (links only) -->
-  <nav id="main-nav" aria-label="Primary">
-    <ul class="menu">
-      <li><a href="index.html">HOME</a></li>
-      <li><a href="index-ourDJS.html">OUR DJ&#39;S</a></li>
-      <li><a href="schedule.html">SCHEDULE</a></li>
-      <li><a href="merch.html">MERCH</a></li>
-    </ul>
+  <!-- NAVIGATION BAR -->
+  <nav id="main-nav">
+    <div class="nav-item nav-left">
+      <a href="index.html#history">HOME</a>
+    </div>
+    <div class="nav-item nav-center">
+      <a href="index-ourDJS.html">OUR DJS</a>
+    </div>
+    <div class="nav-item nav-right">
+      <a href="our-story.html">OUR STORY</a>
+    </div>
   </nav>
 
-  <!-- STORY PANELS -->
-  <main class="story-content">
-    <div class="history-image">
-      <img src="images/1-history.png" alt="History part 1">
-    </div>
-    <div class="history-image">
-      <img src="images/2-history.png" alt="History part 2">
-    </div>
-    <div class="history-image history-last">
-      <img src="images/3-history.png" alt="History part 3">
-      <div class="video-overlay">
-        <div class="inner">
-          <iframe src="https://www.youtube.com/embed/6lcWDYT681g"
-                  title="Documentary"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen></iframe>
-        </div>
-      </div>
-    </div>
-
-    <a href="index.html" class="back-home">← Back to Main Page</a>
+  <!-- MERCH CONTENT: ONE IFRAME ONLY, SHOWING ALL ITEMS SIDE-BY-SIDE -->
+  <main class="merch-section">
+    <iframe
+      src="https://direct.app/embed/cutterschoiceradio"
+      loading="eager"
+    ></iframe>
   </main>
 
   <!-- FOOTER -->
   <footer class="banner"></footer>
-
-  <!-- GIF-SWAP SCRIPT -->
-  <script>
-    (function(){
-      const right = document.querySelector('.header-gif-right');
-      const left  = document.querySelector('.header-gif-left');
-      let loopCount = 0;
-
-      const set1 = [
-        "url('images/Untitled%20design(4).gif')",
-        "url('images/Untitled%20design(5).gif')"
-      ];
-      const set2 = [
-        "url('images/Untitled%20design(7).gif')",
-        "url('images/Untitled%20design(8).gif')"
-      ];
-
-      let currentSet = set1;
-      right.style.backgroundImage = currentSet[0];
-      left.style.backgroundImage  = currentSet[1];
-
-      right.addEventListener('animationiteration', () => {
-        loopCount++;
-        if (loopCount % 2 === 0) {
-          currentSet = (currentSet === set1) ? set2 : set1;
-          right.style.backgroundImage = currentSet[0];
-          left.style.backgroundImage  = currentSet[1];
-        }
-      });
-    })();
-  </script>
 </body>
 </html>
