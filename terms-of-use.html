@@ -24,28 +24,25 @@
     nav#main-nav        { position: relative; z-index: 20; }
 
     /* =========================
-       NAV – match Image 2 look
+       NAV – teal bar with two
+       thin black lines INSIDE
+       (matches your screenshot)
        ========================= */
-    nav#main-nav {
-      background: var(--brand-teal);
-      /* two thin black lines that break the teal (top & bottom) */
-      position: relative;
+    nav#main-nav{
+      --stripe-offset: 6px;       /* distance from top/bottom edge */
+      --stripe-thickness: 2px;    /* thickness of the black lines   */
+      background:
+        /* top inner black line */
+        linear-gradient(#000,#000) 0 var(--stripe-offset) / 100% var(--stripe-thickness) no-repeat,
+        /* bottom inner black line */
+        linear-gradient(#000,#000) 0 calc(100% - var(--stripe-offset)) / 100% var(--stripe-thickness) no-repeat,
+        /* teal fill */
+        var(--brand-teal);
       padding: 10px 12px;
     }
-    nav#main-nav::before,
-    nav#main-nav::after {
-      content: "";
-      position: absolute;
-      left: 0; right: 0;
-      height: 2px;               /* thin line */
-      background: #000;
-      pointer-events: none;
-    }
-    nav#main-nav::before { top: 0; }
-    nav#main-nav::after  { bottom: 0; }
 
     /* Centered, evenly spaced links across the bar */
-    #main-nav .menu {
+    #main-nav .menu{
       list-style: none;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -55,24 +52,23 @@
       gap: 0;
       width: 100%;
     }
-    #main-nav .menu a {
+    #main-nav .menu a{
       display: block;
       text-align: center;
       font-family: 'Bebas Neue', sans-serif !important;
       text-decoration: none;
-      color: #f5f7f7;             /* brighter white like Image 2 */
+      color: #f5f7f7;             /* bright white like the schedule bar */
       letter-spacing: .5px;
       line-height: 1;
-      /* size comparable to schedule bar; scales a touch on big/small screens */
-      font-size: clamp(20px, 2.6vw, 28px);
+      font-size: clamp(20px, 2.6vw, 28px);  /* same visual weight as Image 2 */
       opacity: .95;
       transition: opacity .15s ease;
     }
     #main-nav .menu a:hover,
-    #main-nav .menu a.active { opacity: 1; color: #fff; }
+    #main-nav .menu a.active{ opacity:1; color:#fff; }
 
     /* Story panels wrapper */
-    .story-content {
+    .story-content{
       width: 90%;
       margin: 4rem auto;
       background: #000;
@@ -80,60 +76,38 @@
     }
 
     /* Panel container */
-    .history-image {
-      position: relative;
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-    .history-image img {
-      display: block;
-      width: 70%;
-      height: auto;
-      margin: 0 auto;
-      border: none;
+    .history-image{ position: relative; margin-bottom: 2rem; text-align: center; }
+    .history-image img{
+      display: block; width: 70%; height: auto; margin: 0 auto; border: none;
     }
 
     /* Video below last panel */
-    .history-image.history-last .video-overlay {
-      position: relative;
-      bottom: auto;
-      left: auto;
-      transform: none;
-      width: 70%;
-      max-width: 500px;
-      margin: 2rem auto;
-      z-index: 5;
+    .history-image.history-last .video-overlay{
+      position: relative; bottom:auto; left:auto; transform:none;
+      width: 70%; max-width: 500px; margin: 2rem auto; z-index:5;
     }
-    .history-image.history-last .video-overlay .inner {
-      position: relative;
-      width: 100%;
-      padding-bottom: 56.25%; /* 16:9 */
+    .history-image.history-last .video-overlay .inner{
+      position: relative; width:100%; padding-bottom:56.25%;
     }
-    .history-image.history-last .video-overlay iframe {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      border: none;
+    .history-image.history-last .video-overlay iframe{
+      position:absolute; top:0; left:0; width:100%; height:100%; border:none;
     }
 
     /* Back link */
-    .back-home {
-      display: inline-block;
-      font-size: 1.6rem;
-      margin: 2rem auto 3rem;
-      color: var(--brand-teal);
-      text-decoration: none;
+    .back-home{
+      display:inline-block; font-size:1.6rem; margin:2rem auto 3rem;
+      color:var(--brand-teal); text-decoration:none;
     }
 
-    footer.banner { margin-top: 3rem; }
+    footer.banner{ margin-top:3rem; }
 
     /* ─── MOBILE OVERRIDES ───────────────────────────── */
-    @media (max-width: 768px) {
-      nav#main-nav { padding: 8px 8px; }
-      #main-nav .menu a { font-size: 20px; }
+    @media (max-width: 768px){
+      nav#main-nav{ padding:8px 8px; }
+      #main-nav .menu a{ font-size:20px; }
 
-      .history-image img { width: 100% !important; }
-      .history-image.history-last .video-overlay { width: 75% !important; }
+      .history-image img{ width:100% !important; }
+      .history-image.history-last .video-overlay{ width:75% !important; }
     }
   </style>
 </head>
@@ -159,7 +133,7 @@
   <nav id="main-nav" aria-label="Primary">
     <ul class="menu">
       <li><a href="index.html">HOME</a></li>
-      <li><a href="index-ourDJS.html">OUR DJ&#39;s</a></li>
+      <li><a href="index-ourDJS.html">OUR DJ&#39;S</a></li>
       <li><a href="schedule.html">SCHEDULE</a></li>
       <li><a href="merch.html">MERCH</a></li>
     </ul>
@@ -193,7 +167,7 @@
 
   <!-- GIF-SWAP SCRIPT -->
   <script>
-    (function () {
+    (function(){
       const right = document.querySelector('.header-gif-right');
       const left  = document.querySelector('.header-gif-left');
       let loopCount = 0;
